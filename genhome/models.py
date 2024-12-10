@@ -6,3 +6,6 @@ class FaSequence(models.Model):
     #)
     sequence = models.TextField()
 
+
+class Annotation(models.Model):
+    sequence = models.ForeignKey(FaSequence, on_delete=models.CASCADE, related_name="annotations")

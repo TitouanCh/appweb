@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <title>Annotation de la séquence</title>
+</head>
+<body>
+    <h1>ID sequence : {{ sequence.id }}</h1>
+        <h2>Séquence : </h2> {{ sequence.sequence }}
+
+    <form method="POST">
+        {% csrf_token %}
+        <label for="annotation">Annotation :</label><br>
+        <textarea id="annotation" name="annotation"></textarea><br><br>
+        <button type="submit">Ajouter Annotation</button>
+    </form>
+
+</body>
+</html>

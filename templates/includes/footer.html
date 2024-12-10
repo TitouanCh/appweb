@@ -1,3 +1,6 @@
 <footer>
+  {% if user.is_authenticated %}
+  <span id="login" class="text-rainbow-animation">{{ user.email }}</span>
+  {% endif %}
   <p>TODO: add footer</p>
 </footer>

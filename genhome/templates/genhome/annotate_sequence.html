@@ -10,7 +10,7 @@
         <textarea name="annotation" class="w-full p-3 border rounded mb-4" rows="4" placeholder="Ajoutez une annotation"></textarea>
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Soumettre</button>
     </form>
-    <h2 class="text-xl font-semibold mt-8">Annotations existantes :</h2>
+    <h2 class="text-xl font-semibold mt-8">Annotations :</h2>
     <ul class="mt-3">
         {% for annotation in annotations %}
             <li class="p-3 border-b">{{ annotation.content }} <span class="text-sm text-gray-500">(Ajoutée le {{ annotation.created_at|date:"d M Y H:i" }})</span></li>

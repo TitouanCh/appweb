@@ -1,8 +1,39 @@
-{% extends "base.html" %}
 
-{% block title %}Home Page{% endblock %}
 
-{% block content %}
-<h1>Welcome to our site</h1>
-<p>This is the homepage.</p>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page d'accueil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">HomePage</h1>
+        <div class="bg-white shadow-md rounded-lg p-4">
+            <ul class="space-y-4">
+                {% for sequence in sequences %}
+                    <li class="flex justify-between items-center bg-gray-50 p-4 rounded-md shadow-sm">
+                        <div>
+                            <strong class="text-lg">ID : </strong>
+                            <a href="{% url 'annotate_sequence' sequence.id %}" class="text-blue-500 hover:text-blue-700">
+                                {{ sequence.id }}
+                            </a>
+                            <br>  
+                            <strong class="text-lg">Statue : </strong> {{ sequence.get_status_display  }} 
+                            <br>
+                            <strong class="text-lg">Séquence : </strong> {{ sequence.sequence|slice:":30"}}...
+                        </div>
+                    </li>
+                {% empty %}
+                    <li class="bg-red-100 text-red-800 p-4 rounded-md">
+                        Aucune séquence enregistrée.
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <a href="{% url 'add_sequence' %}">Ajouter une séquence</a>
+    </div>
+</body>
+</html>

@@ -1,10 +1,18 @@
 from django.db import models
 
 class FaSequence(models.Model):
-    status = models.TextChoices(
-            "Full Genome", "Coding DNA Sequence", "Peptide Sequence"
+    status = models.CharField(
+        max_length=50,
+        choices=[
+            ("Full Genome", "Full Genome"),
+            ("Coding DNA Sequence", "Coding DNA Sequence"),
+            ("Peptide Sequence", "Peptide Sequence"),
+        ],
+        default="Coding DNA Sequence"  # 
     )
     sequence = models.TextField()
+    def __str__(self):
+        return f"Statue :{self.status}, Sequence: {self.sequence[:30]}...,id: {self.id},"
 
 
 class Annotation(models.Model):

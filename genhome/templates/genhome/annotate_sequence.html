@@ -5,7 +5,7 @@
 <div class="max-w-4xl mx-auto p-5">
     <h1 class="text-2xl font-bold text-center"> Séquence {{ sequence.id }}</h1>
     <p><strong></strong> {{ sequence.get_status_display }}</p>
-    <pre class="bg-gray-100 p-4 rounded border mt-3"> {{ sequence.sequence }}</pre>
+    <pre class="bg-gray-100 p-4 rounded border mt-3"> {{ sequence.sequence|slice:":80"}}</pre>
     <form method="POST" class="mt-6">
         {% csrf_token %}
         <textarea name="annotation" class="w-full p-3 border rounded mb-4" rows="4" placeholder="Ajoutez une annotation"></textarea>

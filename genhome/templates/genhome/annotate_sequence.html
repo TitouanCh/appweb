@@ -1,25 +1,23 @@
-<head>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+{% extends "base.html" %}
+{% block title %}Annotate Sequence{% endblock %}
+{% block content %}
+<h1> Séquence {{ sequence.id }}</h1>
+<p>{{ sequence.get_status_display }}</p>
+<pre>{{ sequence.sequence|slice:":80"}}</pre>
 
-<div class="max-w-4xl mx-auto p-5">
-    <h1 class="text-2xl font-bold text-center"> Séquence {{ sequence.id }}</h1>
-    <p><strong></strong> {{ sequence.get_status_display }}</p>
-    <pre class="bg-gray-100 p-4 rounded border mt-3"> {{ sequence.sequence|slice:":80"}}</pre>
-    <form method="POST" class="mt-6">
-        {% csrf_token %}
-        <textarea name="annotation" class="w-full p-3 border rounded mb-4" rows="4" placeholder="Ajoutez une annotation"></textarea>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Soumettre</button></form>
-    <h2 class="text-xl font-semibold mt-8">Annotations :</h2>
-    <ul class="mt-3">
-        {% for annotation in annotations %}
-            <li class="p-3 border-b">{{ annotation.content }} <span class="text-sm text-gray-500">(Ajoutée le {{ annotation.created_at|date:"d M Y H:i" }})</span>
-                <a href="{% url 'delete_annotation' annotation.id %}" 
-               class="btn btn-sm btn-danger rounded-circle" 
-               title="Supprimer"
-               style="background-color: red ; color: red; border: none; border-radius: 50%; width: 30px; height: 30px; text-align: center; padding: 5px; display: inline-block; line-height: 20px;">
-                ✖
-            </a>
-        {% endfor %}
-    </ul>
-</div>
+<form method="POST">
+  {% csrf_token %}
+  <textarea name="annotation" rows="4" placeholder="Ajoutez une annotation"></textarea>
+  <button type="submit">Soumettre</button>
+</form>
+
+<h2>Annotations :</h2>
+<ul>
+  {% for annotation in annotations %}
+  <li>
+    {{ annotation.content }}
+    <span>(Ajoutée le {{ annotation.created_at|date:"d M Y H:i" }})</span>
+    <a href="{% url 'delete_annotation' annotation.id %}" title="Supprimer" style="background-color: red ; color: red; border: none; border-radius: 50%; width: 30px; height: 30px; text-align: center; padding: 5px; display: inline-block; line-height: 20px;">✖ </a>
+  {% endfor %}
+</ul>
+{% endblock %}

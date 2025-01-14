@@ -43,31 +43,45 @@ def delete_annotation(request, annotation_id):
 
 
 def add_sequence(request):
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden("You must be logged to add a new sequence.")
-
     if request.method == 'POST':
         form = FaSequenceForm(request.POST, request.FILES)
         if not form.is_valid():
             print(form.errors)  # Affichez les erreurs dans la console
-        # Si oui enregistre la nouvelle sequence avec un nouvel id 
+        
         if form.is_valid():
             fasta_file = request.FILES['sequence_file']
-            sequence = extract_sequence_from_fasta(fasta_file)
-                    #vérification si la séquence valide
-            if not is_dna(sequence):  
-                messages.error(request, "Veuillez rentrez une sequence ADN valide")
+            try:
+                annotations, sequences = extract_sequence_from_fasta(fasta_file)
+            except ValidationError as e:
+                messages.error(request, str(e))
                 return render(request, 'genhome/add_sequence.html', {'form': form})
-        # Si oui enregistre la nouvelle sequence avec un nouvel id 
-            # Enregistrer la nouvelle séquence dans la base de données
-            print('c')
-            new_sequence = FaSequence(
-                status=form.cleaned_data['status'],
-                sequence=sequence,
-                owner=request.user
-            )
-            fa_sequence = new_sequence.save() 
-            return redirect('annotate_sequence', sequence_id=new_sequence.id)
+            
+            invalid_sequences = []
+            new_sequence_ids = []
+            for i, sequence in enumerate(sequences):
+                if not is_dna(sequence):
+                    invalid_sequences.append(annotations[i] if i < len(annotations) else f"Sequence {i + 1}")
+                    continue  #Passer la sequence si ce n'est pas de l'adn 
+
+                # Enregistrer chaque séquence valide dans la base de données
+                new_sequence = FaSequence(
+                    status=form.cleaned_data['status'],
+                    sequence=sequence
+                )
+                new_sequence.save()
+                new_sequence_ids.append(new_sequence.id) 
+            # messages utilisateurs  
+            if invalid_sequences:
+                messages.warning(request, f"attention il a des sequences invalide positions : {', '.join(invalid_sequences)}")
+            if new_sequence_ids:
+                messages.success(request, f"{len(new_sequence_ids)} séquences ajoutées.")
+            
+            # Rediriger vers la page d'annotation de la premiere sequence ajoutée
+            if new_sequence_ids:
+                return redirect('annotate_sequence', sequence_id=new_sequence_ids[0])
+            else:
+                return render(request, 'genhome/add_sequence.html', {'form': form})
+
     else:
         form = FaSequenceForm()
     return render(request, 'genhome/add_sequence.html', {'form': form})
@@ -79,18 +93,31 @@ def is_dna(seq):
             return False
     return True
 
+def is_prot(seq) : 
+    for nucleotide in seq:
+        if nucleotide not in ['A', 'R',  'N',  'D',  'C', 'Q', 'E','G',  'H', 'I', 'L', 'K', 'M', 'F', 'P',  'S', 'T',  'W',  'Y',  'V',  'U',  'O'  ] :
+            return False
+    return True
 
 def extract_sequence_from_fasta(file):
-    """Extrait la séquence d'un fichier FASTA."""
     try:
         # Lire le contenu du fichier FASTA
         content = file.read().decode('utf-8')
-        
         # Séparer par les lignes et ignorer les lignes qui commencent par '>'
         lines = content.splitlines()
-        print(lines)
-        sequence = ''.join(line for line in lines if not line.startswith('>'))
-        print(sequence)
-        return sequence
+        sequences=[]
+        annotations=[]
+        s=''
+        for line in lines : 
+            if line.startswith('>'): 
+                if annotations!=[] : 
+                    sequences.append(s)
+                    s=''
+                annotations.append(line.strip())
+            else : 
+                s=s+line.strip()
+        sequences.append(s) # on oublie pas la derniere sequence
+        return annotations,sequences
     except Exception as e:
-        raise ValidationError(f"Erreur lors de la lecture du fichier FASTA : {e}")
+        print(e)
+        raise ValidationError('Erreur de lecture du fichier ')

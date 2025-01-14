@@ -1,0 +1,32 @@
+Gestions des utilisateurs et des projets: (Titouan)
+    - Rendre login/logout beau + nom, prénom, numéro de telephone et derniére connexion
+    - Gestion des permissions/roles
+
+Sélection des informations relatives à un génome: (Kubilay)
+    - Creer une app et une vue
+
+Visualisation des informations génomiques:
+    - Creer une app et une vue
+
+Extraction des données:
+    - ?
+
+Comparaison et alignement de séquences:
+    - ?
+
+Accès aux informations complémentaires des banques de données:
+    - ?
+
+Annotations des nouveaux génomes: (Maxime)
+    - Déplacer le code dans une app différente pour meilleur organisation
+    - Interface pour vois les séquences qui ont été affectésc
+
+Validation des annotations:
+    - ?
+
+Visualisation des annotations en cours: (Maxime)
+    - Différencié les annotations en cours de validation
+
+Autre:
+    - Diagramme UML
+    - CSS (rendre le site beau)

@@ -1,7 +1,3 @@
-- Remettre topbar et footer
 - Rendre login/logout beau + nom, prénom, numéro de telephone et derniére connexion
 - Seul utilisateur peuvent annoter
 - Svg poubelle
-
-Remis topbar et navbar
-Viré tailwind parce que c'est trop horrible

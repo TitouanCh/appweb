@@ -9,7 +9,9 @@
       <strong>ID : </strong>
       <a href="{% url 'annotate_sequence' sequence.id %}">{{ sequence.id }}</a>
       <strong>Statue : </strong>
-      {{ sequence.get_status_display  }} 
+      {{ sequence.get_status_display  }}
+      <strong>Owner : </strong>
+      {{ sequence.owner.email }}
       <strong>Séquence : </strong>
       {{ sequence.sequence|slice:":30"}}...
     </div>

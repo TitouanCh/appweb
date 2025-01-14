@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponseForbidden
 from django.template import loader
 from django.shortcuts import render, get_object_or_404,redirect
 from .models import FaSequence, Annotation
@@ -16,10 +16,17 @@ def home(request):
 def annotate_sequence(request, sequence_id):
     sequence = get_object_or_404(FaSequence, id=sequence_id)
 
+    if not request.user.is_authenticated: # TODO: Checker les droits de l'utilisateur aussi
+        return HttpResponseForbidden("You must be logged in to create an annotation.")
+
     if request.method == 'POST':
         annotation_content = request.POST.get('annotation')
         if annotation_content:
-            Annotation.objects.create(sequence=sequence, content=annotation_content)
+            Annotation.objects.create(
+                sequence=sequence,
+                content=annotation_content,
+                owner=request.user
+            )
             return redirect('annotate_sequence', sequence_id=sequence.id)
     annotations = sequence.annotations.all()
 
@@ -36,6 +43,9 @@ def delete_annotation(request, annotation_id):
 
 
 def add_sequence(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("You must be logged to add a new sequence.")
+
     if request.method == 'POST':
         form = FaSequenceForm(request.POST, request.FILES)
         if not form.is_valid():
@@ -53,7 +63,8 @@ def add_sequence(request):
             print('c')
             new_sequence = FaSequence(
                 status=form.cleaned_data['status'],
-                sequence=sequence
+                sequence=sequence,
+                owner=request.user
             )
             fa_sequence = new_sequence.save() 
             return redirect('annotate_sequence', sequence_id=new_sequence.id)

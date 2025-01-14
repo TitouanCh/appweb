@@ -11,15 +11,15 @@ Visualisation des informations génomiques:
 Extraction des données:
     - ?
 
-Comparaison et alignement de séquences:
+Comparaison et alignement de séquences: (Kubilay)
     - ?
 
-Accès aux informations complémentaires des banques de données:
+Accès aux informations complémentaires des banques de données (Nathan):
     - ?
 
 Annotations des nouveaux génomes: (Maxime)
     - Déplacer le code dans une app différente pour meilleur organisation
-    - Interface pour vois les séquences qui ont été affectésc
+    - Interface pour vois les séquences qui ont été affectés
 
 Validation des annotations:
     - ?

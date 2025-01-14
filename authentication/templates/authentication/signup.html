@@ -1,4 +1,6 @@
-
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+{% block content %}
 <h1>Sign Up</h1>
 {% if error %}
 <p>{{ error }}</p>
@@ -9,3 +11,4 @@
   <input type="password" name="password" placeholder="Password"><br>
   <input type="submit" value="Sign up">
 </form>
+{% endblock %}

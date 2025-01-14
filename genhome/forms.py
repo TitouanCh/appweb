@@ -9,4 +9,4 @@ class FaSequenceForm(forms.ModelForm):
             'status': forms.Select(attrs={'class': 'form-control'}),
         }
         # Champ pour télécharger un fichier FASTA
-    sequence_file = forms.FileField(label="Ou téléchargez votre fichier FASTA", required=True)
+    sequence_file = forms.FileField(label="Téléchargez votre fichier FASTA", required=True)

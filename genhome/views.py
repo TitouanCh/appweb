@@ -36,6 +36,19 @@ def annotate_sequence(request, sequence_id):
         {'sequence': sequence, 'annotations': annotations}
     )
 
+
+def simple_view(request, sequence_id):
+    sequence = get_object_or_404(FaSequence, id=sequence_id)
+    annotations = sequence.annotations.all()
+    return render(
+        request, 
+        'genhome/simple_view.html', 
+        {'sequence': sequence,'annotations': annotations}
+    )
+
+
+
+
 def delete_annotation(request, annotation_id):
     annotation = get_object_or_404(Annotation, id=annotation_id)
     annotation.delete()
@@ -60,7 +73,7 @@ def add_sequence(request):
             new_sequence_ids = []
             for i, sequence in enumerate(sequences):
                 if not is_dna(sequence):
-                    invalid_sequences.append(annotations[i] if i < len(annotations) else f"Sequence {i + 1}")
+                    invalid_sequences.append(annotations[i])
                     continue  #Passer la sequence si ce n'est pas de l'adn 
 
                 # Enregistrer chaque séquence valide dans la base de données
@@ -72,7 +85,7 @@ def add_sequence(request):
                 new_sequence_ids.append(new_sequence.id) 
             # messages utilisateurs  
             if invalid_sequences:
-                messages.warning(request, f"attention il a des sequences invalide positions : {', '.join(invalid_sequences)}")
+                messages.warning(request, f"attention il y a des sequences invalide apres header  : {', '.join(invalid_sequences)}")
             if new_sequence_ids:
                 messages.success(request, f"{len(new_sequence_ids)} séquences ajoutées.")
             

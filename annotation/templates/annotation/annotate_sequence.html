@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Annotate Sequence{% endblock %}
+{% block content %}
+<h1> Séquence {{ sequence.id }}</h1>
+<p>{{ sequence.get_status_display }}</p>
+<pre>{{ sequence.sequence|slice:":80"}}</pre>
+
+<form method="POST">
+  {% csrf_token %}
+  <textarea name="annotation" rows="4" placeholder="Ajoutez une annotation"></textarea>
+  <button type="submit">Soumettre</button>
+</form>
+
+<h2>Annotations :</h2>
+<ul>
+  {% for annotation in annotations %}
+  <li>
+    {{ annotation.content }}
+    <span>(Ajoutée le {{ annotation.created_at|date:"d M Y H:i" }} par
+      {{annotation.owner.email}})</span>
+    <a href="{% url 'delete_annotation' annotation.id %}" title="Supprimer" style="background-color: red ; color: red; border: none; border-radius: 50%; width: 30px; height: 30px; text-align: center; padding: 5px; display: inline-block; line-height: 20px;">✖ </a>
+  {% endfor %}
+</ul>
+{% endblock %}

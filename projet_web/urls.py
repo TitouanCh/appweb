@@ -21,6 +21,6 @@ from django.urls.conf import include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('genhome.urls')),
-    path('', include('authentication.urls'))
-    path('annotation', include('annotations.urls'))
+    path('', include('authentication.urls')),
+    path('annotation', include('annotation.urls'))
 ]

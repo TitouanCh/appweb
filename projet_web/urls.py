@@ -20,6 +20,7 @@ from django.urls.conf import include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('genhome.urls')),
-    path('', include('authentication.urls'))
+    path('genhome/', include('genhome.urls')),
+    path('auth/', include('authentication.urls')),
+    path('blast_request/', include('blast_request.urls')),
 ]

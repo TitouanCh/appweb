@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choisir une banque de données</title>
+</head>
+<body>
+    <h1>Accéder aux informations complémentaires d'autres bases de données</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="database">Sélectionnez une banque de données :</label>
+        <select id="database" name="database" required>
+            {% for db in databases %}
+                <option value="{{ db.id }}">{{ db.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Accéder</button>
+    </form>
+</body>
+</html>

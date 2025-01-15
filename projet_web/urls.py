@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('genhome.urls')),
     path('', include('authentication.urls'))
+    path('annotation', include('annotations.urls'))
 ]

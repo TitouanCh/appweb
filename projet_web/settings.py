@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'authentication',
     'search',
     'blast',
-    'blast_request'
+    'blast_request',
+    'annotation'
 ]
 
 MIDDLEWARE = [

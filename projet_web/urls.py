@@ -25,4 +25,5 @@ urlpatterns = [
     path('', include('search.urls')),
     path('blast/', include('blast.urls')),
     path('blast-request/', include('blast_request.urls')),
+    path('annotation/', include('annotation.urls')),
 ]

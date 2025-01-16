@@ -7,7 +7,7 @@
   <li>
     <div>
       <strong>ID : </strong>
-      <a href="{% url 'annotate_sequence' sequence.id %}">{{ sequence.id }}</a>
+      <a href="{% url 'simple_view' sequence.id %}">{{ sequence.id }}</a>
       <strong>Statue : </strong>
       {{ sequence.get_status_display  }}
       <strong>Owner : </strong>

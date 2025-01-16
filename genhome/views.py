@@ -6,6 +6,7 @@ from django.urls import reverse
 from .forms import FaSequenceForm
 from django.contrib import messages
 from django.core.exceptions import ValidationError
+from django.shortcuts import render, get_object_or_404
 
 def home(request):
     #homepage avec toute les sequences 

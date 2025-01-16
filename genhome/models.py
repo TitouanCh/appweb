@@ -38,3 +38,4 @@ class Annotation(models.Model):
     )
     def __str__(self):
         return f"Annotation for Sequence ID {self.sequence.id}, Owner: {self.owner.email}"
+

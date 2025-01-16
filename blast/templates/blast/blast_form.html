@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Search Results{% endblock %}
+{% block content %}
+<h1>BLAST Sequence Search</h1>
+
+{% if selected_sequence %}
+    <h2>Selected Sequence</h2>
+    <p><strong>{{ selected_sequence.name }}</strong>: {{ selected_sequence.sequence }}</p>
+    <h2>BLAST Results</h2>
+    <pre>{{ result }}</pre>
+{% else %}
+    <h2>Select a Sequence</h2>
+    <ul>
+        {% for seq in sequences %}
+            <li>
+                <a href="{% url 'blast' seq.id %}">{{ seq.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <h2>Or Enter a Custom Sequence</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Run BLAST</button>
+    </form>
+{% endif %}
+
+{% endblock %}

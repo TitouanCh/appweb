@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from authentication.models import BioinfoUser
+from django.http import HttpResponseForbidden
 #source: https://www.codeswithpankaj.com/post/create-a-login-logout-system-in-django-step-by-step-instructions
 
 def login_view(request):
@@ -33,3 +34,9 @@ def signup_view(request):
                           {'error': 'Echec de la création du compte'})
     else:
         return render(request, 'authentication/signup.html')
+
+def profile_view(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("You must be logged in to view your profile.")
+
+    return render(request, 'authentication/profile.html')

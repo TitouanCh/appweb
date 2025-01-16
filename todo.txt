@@ -3,19 +3,19 @@ Gestions des utilisateurs et des projets: (Titouan)
     - Gestion des permissions/roles
 
 Sélection des informations relatives à un génome: (Kubilay)
-    - Creer une app et une vue
+    - Rendre la page fonctionelle
 
-Visualisation des informations génomiques:
-    - Creer une app et une vue
+Visualisation des informations génomiques: (Maxime)
+    - Ok
 
 Extraction des données:
-    - ?
+    - Bouton
 
 Comparaison et alignement de séquences: (Kubilay)
-    - ?
+    - Rendre la page fonctionelle
 
 Accès aux informations complémentaires des banques de données (Nathan):
-    - ?
+    - Rendre la page fonctionnele
 
 Annotations des nouveaux génomes: (Maxime)
     - Déplacer le code dans une app différente pour meilleur organisation

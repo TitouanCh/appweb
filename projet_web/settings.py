@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'genhome',
     'authentication',
     'search',
-    'blast'
+    'blast',
+    'blast_request'
 ]
 
 MIDDLEWARE = [

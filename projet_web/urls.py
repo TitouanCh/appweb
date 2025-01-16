@@ -23,5 +23,6 @@ urlpatterns = [
     path('', include('genhome.urls')),
     path('', include('authentication.urls')),
     path('', include('search.urls')),
-    path('blast/', include('blast.urls'))
+    path('blast/', include('blast.urls')),
+    path('blast-request/', include('blast_request.urls')),
 ]

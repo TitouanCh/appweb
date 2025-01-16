@@ -1,3 +1,0 @@
-- Rendre login/logout beau + nom, prénom, numéro de telephone et derniére connexion
-- Seul utilisateur peuvent annoter
-- Svg poubelle

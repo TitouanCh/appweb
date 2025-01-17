@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'search',
     'blast',
     'blast_request',
-    'annotation'
+    'annotation',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [

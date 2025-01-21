@@ -15,7 +15,6 @@ class FaSequence(models.Model):
         'authentication.BioinfoUser',
         on_delete=models.CASCADE,
         related_name='fa_sequences',
-        default=1 # TODO: changer
     )
     def __str__(self):
         return f"Statue :{self.status}, Owner: {self.owner.email}, Sequence: {self.sequence[:30]}...,id: {self.id},"

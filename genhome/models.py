@@ -1,6 +1,6 @@
 from django.db import models
 
-features_list=['chromosome','gene','transcript','gene_biotype','transcript_byotype','gene_symbol','description']
+features_list=['chromosome','gene','transcript','gene_biotype','transcript_biotype','gene_symbol','description']
 
 class FaSequence(models.Model):
     status = models.CharField(

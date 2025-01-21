@@ -24,11 +24,14 @@ def annotate_sequence(request, sequence_id):
             )
             return redirect('annotate_sequence', sequence_id=sequence.id)
     annotations = sequence.annotations.all()
+    feature_names = sequence.features_names.split('|')
+    feature_values = sequence.features_val.split('|')
+    features = zip(feature_names, feature_values)
 
     return render(
         request, 
         'annotation/annotate_sequence.html', 
-        {'sequence': sequence, 'annotations': annotations}
+        {'sequence': sequence, 'annotations': annotations,'features' : features}
     )
 
 
@@ -133,11 +136,11 @@ def extract_sequence_from_fasta(file):
                     sequences.append(s)
                     s=''
                 for f in features_list :
-                    if len(line.split(f))>1 : 
+                    if len(line.split(f+':'))>1 : 
                         if f=='description' : 
-                            annotations[f]=line.split(f)[1].strip()
+                            annotations[f]=line.split(f+':')[1].strip()
                         else :
-                            annotations[f]=line.split(f)[1].split(' ')[0].strip()
+                            annotations[f]=line.split(f+':')[1].split(' ')[0].strip()
                     else : 
                         annotations[f]='non defini'
                 annotationsbyseq.append(annotations)

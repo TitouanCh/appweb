@@ -6,6 +6,13 @@
 <pre>{{ sequence.sequence|slice:":80"}}</pre>
 
 <form method="POST">
+  <h2>Features :</h2>
+<ul>
+  {% for name, value in features %}
+  <li><strong>{{ name }}</strong>: {{ value }}</li>
+  {% endfor %}
+</ul>
+
   {% csrf_token %}
   <textarea name="annotation" rows="4" placeholder="Ajoutez une annotation"></textarea>
   <button type="submit">Soumettre</button>

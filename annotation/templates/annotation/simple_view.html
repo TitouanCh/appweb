@@ -5,6 +5,15 @@
 <p>{{ sequence.get_status_display }}</p>
 <pre>{{ sequence.sequence|slice:":80"}}</pre>
 
+
+
+<h2>Features :</h2>
+<ul>
+  {% for name, value in features %}
+  <li><strong>{{ name }}</strong>: {{ value }}</li>
+  {% endfor %}
+</ul>
+
 <form method="POST">
 </form>
 

@@ -13,13 +13,12 @@
   <li><strong>{{ name }}</strong>: {{ value }}</li>
   {% endfor %}
 </ul>
-
 <form method="POST">
 </form>
 
 
 <h2>Annotations :</h2>
-<a href="{% url 'annotate_sequence' sequence.id %}">Ajouter des annotations</a>
+<a href="{% url 'annotate_sequence' sequence.id %}">Ajouter des annotations</a>    # Afficher en base 64 
 <ul>
   {% for annotation in annotations %}
   <li>

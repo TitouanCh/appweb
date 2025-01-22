@@ -131,7 +131,7 @@ def extract_sequence_from_fasta(file):
         s=''
         for line in lines : 
             if line.startswith('>'): 
-                print('c')
+                #print('c')
                 if annotationsbyseq!=[] : 
                     sequences.append(s)
                     s=''

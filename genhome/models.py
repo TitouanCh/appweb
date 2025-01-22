@@ -1,5 +1,6 @@
 from django.db import models
 
+#Faire class feature 
 features_list=['chromosome','gene','transcript','gene_biotype','transcript_biotype','gene_symbol','description']
 
 class FaSequence(models.Model):

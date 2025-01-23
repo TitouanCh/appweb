@@ -9,8 +9,8 @@
 
 <h2>Features :</h2>
 <ul>
-  {% for name, value in features %}
-  <li><strong>{{ name }}</strong>: {{ value }}</li>
+  {% for ft in features %}
+  <li><strong>{{ ft.status }}</strong>: {{ ft.value }}</li>
   {% endfor %}
 </ul>
 <form method="POST">

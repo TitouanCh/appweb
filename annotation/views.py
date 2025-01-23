@@ -1,12 +1,15 @@
 from django.http import HttpResponseForbidden,HttpResponse
 from django.template import loader
 from django.shortcuts import render, get_object_or_404,redirect
-from .models import Annotation
+from .models import Annotation,Feature
 from django.urls import reverse
 from .forms import FaSequenceForm
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from genhome.models import FaSequence
+
+
+features_list=['chromosome','gene','transcript','gene_biotype','transcript_biotype','gene_symbol','description']
 
 def annotate_sequence(request, sequence_id):
     sequence = get_object_or_404(FaSequence, id=sequence_id)
@@ -24,9 +27,7 @@ def annotate_sequence(request, sequence_id):
             )
             return redirect('annotate_sequence', sequence_id=sequence.id)
     annotations = sequence.annotations.all()
-    feature_names = sequence.features_names.split('|')
-    feature_values = sequence.features_val.split('|')
-    features = zip(feature_names, feature_values)
+    features=sequence.feature.all()
 
     return render(
         request, 
@@ -38,9 +39,7 @@ def annotate_sequence(request, sequence_id):
 def simple_view(request, sequence_id):
     sequence = get_object_or_404(FaSequence, id=sequence_id)
     annotations = sequence.annotations.all() # Transformation des features en liste
-    feature_names = sequence.features_names.split('|')
-    feature_values = sequence.features_val.split('|')
-    features = zip(feature_names, feature_values)
+    features=sequence.feature.all()
     return render(
         request, 
         'annotation/simple_view.html', 
@@ -81,15 +80,30 @@ def add_sequence(request):
                 new_sequence = FaSequence(
                     status=form.cleaned_data['status'],
                     sequence=sequence,
-                    features_val=('|').join([annotations[i][key] for key in annotations[i]])
+                    #features_val=('|').join([annotations[i][key] for key in annotations[i]]),
+                    owner=request.user
                 )
                 new_sequence.save()
                 new_sequence_ids.append(new_sequence.id) 
+                #Enregistrer les features de la sequence : 
+                for feature in features_list: 
+                    if feature=='description' :
+                        new_annotations=Annotation(sequence=new_sequence,
+                                                   owner=request.user,
+                                                   content=annotations[i][feature]
+                                                   )
+                        new_annotations.save()
+                    else : 
+                        new_feature=Feature(sequence=new_sequence,
+                                            status=feature,
+                                            value=annotations[i][feature],
+                                            owner=request.user)
+                        new_feature.save()
             # messages utilisateurs  
             if invalid_sequences:
                 messages.warning(request, f"attention il y a des sequences invalide apres header  : {', '.join(annotations[i])}")
-            if new_sequence_ids:
-                messages.success(request, f"{len(new_sequence_ids)} séquences ajoutées.")
+            #if new_sequence_ids:
+                #messages.success(request, f"{len(new_sequence_ids)} séquences ajoutées.")
             
             # Rediriger vers la page d'annotation de la premiere sequence ajoutée
             if new_sequence_ids:
@@ -115,7 +129,6 @@ def is_prot(seq) :
     return True
 
 
-
 def extract_sequence_from_fasta(file):
     try:
         # Lire le contenu du fichier FASTA
@@ -125,8 +138,6 @@ def extract_sequence_from_fasta(file):
         sequences=[]    # liste de sequences
         annotationsbyseq=[] # liste de dictionnaires de features pour chaque sequence
         annotations={}  # dictionnaire avec features : features values pour chaque features défini
-        sequence_lamba=FaSequence('Do_not_use')
-        features_list=sequence_lamba.features_names.split('|')
         #print(features_list)
         s=''
         for line in lines : 

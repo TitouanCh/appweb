@@ -25,7 +25,6 @@ class BioinfoUserManager(BaseUserManager):
 
     def create_superuser(self, email, password=None):
         user = self.create_user(email, password=password, role=Role.ADMIN)
-        user.is_admin = True
         user.save(using=self._db)
         return user
 
@@ -47,7 +46,6 @@ class BioinfoUser(AbstractBaseUser):
     date_joined = models.DateField(verbose_name="date joined",
                                    auto_now_add=True)
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=True)
 
     role = models.CharField(
         max_length=24,
@@ -75,9 +73,7 @@ class BioinfoUser(AbstractBaseUser):
 
     @property
     def is_staff(self):
-        "Is the user a member of staff?"
-        # Simplest possible answer: All admins are staff
-        return self.is_admin
+        return self.role == Role.ADMIN
 
 class RoleRequestManager(models.Manager):
     def create_role_request(self, requester, requested_role):
@@ -115,4 +111,15 @@ class RoleRequest(models.Model):
     objects = RoleRequestManager()
 
     def __str__(self):
-        return f"User {self.requester} (initialement: {self.requester.role}) veut le rôle: {self.requested_role}"
+        return f"User {self.requester} (actuellement: {self.requester.get_role_display()}) veut le rôle: {self.get_requested_role_display()}"
+
+    def accept(self):
+        self.requester.role = self.requested_role
+        self.status = "A"
+        self.requester.save()
+        self.save()
+
+    def deny(self):
+        self.status = "D"
+        self.requester.save()
+        self.save()

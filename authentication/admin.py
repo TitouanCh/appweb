@@ -48,7 +48,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = BioinfoUser
-        fields = ["email", "password", "is_active", "is_admin", "role"]
+        fields = ["email", "password", "is_active", "role"]
 
 
 class UserAdmin(BaseUserAdmin):
@@ -59,11 +59,10 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ["email", "date_joined", "is_admin", "role"]
-    list_filter = ["is_admin"]
+    list_display = ["email", "date_joined", "role"]
     fieldsets = [
         (None, {"fields": ["email", "password"]}),
-        ("Permissions", {"fields": ["is_admin", "role"]}),
+        ("Permissions", {"fields": ["role"]}),
     ]
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -79,6 +78,8 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ["email"]
     ordering = ["email"]
     filter_horizontal = []
+    # Remove 'is_staff', 'is_superuser', and 'groups', and use available fields
+    list_filter = ["role", "date_joined", "is_active"]
 
 
 # Now register the new UserAdmin...

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Role Requests{% endblock %}
+{% block content %}
+<h1>Role requests</h1>
+<ul>
+  {% for request in requests %}
+  {% if request.status == 'P' %}
+    <li>
+      <p>
+        {{ request }}
+        <span id="both{{request.id}}">
+          <button data-number="{{request.id}}" class="accept">Accepter</button>
+          <button data-number="{{request.id}}" class="refuse">Refuser</button>
+        </span>
+      </p>
+    </li>
+  {% endif %}
+  {% empty %}
+  <li>
+    Aucune requête.
+  </li>
+  {% endfor %}
+</ul>
+<script>
+  let accept_buttons = document.getElementsByClassName("accept");
+  let refuse_buttons = document.getElementsByClassName("refuse");
+
+  for (button of accept_buttons) {
+    button.addEventListener("click", function() {
+      fetch("{% url 'process-request' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "type": "accept",
+          "request_id": this.getAttribute("data-number"),
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("both" + data.request_id).innerHTML = `<i>${data.display}</i>`;
+      });
+    });
+  }
+</script>
+{% endblock %}

@@ -19,5 +19,9 @@ class FaSequence(models.Model):
         related_name='fa_sequences',
         default=1 # TODO: changer
     )
+    identifiant=models.CharField(
+        max_length=100,
+        default='Non defini'
+    )
     def __str__(self):
         return f"Statue :{self.status}, Owner: {self.owner.email}, Sequence: {self.sequence[:30]}...,id: {self.id},"

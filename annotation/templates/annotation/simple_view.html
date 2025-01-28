@@ -27,4 +27,19 @@
       {{annotation.owner.email}})</span>
  {% endfor %}
 </ul>
+
+
+<h2>Séquences liées :</h2>
+{% if related_sequences %}
+<ul>
+  {% for seq in related_sequences %}
+  <li>
+    <a href="{% url 'simple_view' seq.id %}">Séquence {{ seq.id }}</a>
+    (Identifiant : {{ seq.identifiant }})
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>Aucune séquence liée trouvée.</p>
+{% endif %}
 {% endblock %}

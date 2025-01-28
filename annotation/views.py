@@ -40,10 +40,17 @@ def simple_view(request, sequence_id):
     sequence = get_object_or_404(FaSequence, id=sequence_id)
     annotations = sequence.annotations.all() # Transformation des features en liste
     features=sequence.feature.all()
+    related_sequences = []
+    print(sequence.identifiant)
+    if sequence.identifiant not in ["Genome", "Non defini"]:
+        related_sequences = FaSequence.objects.filter(
+            identifiant=sequence.identifiant
+        ).exclude(id=sequence.id)
+        print(sequence)
     return render(
         request, 
         'annotation/simple_view.html', 
-        {'sequence': sequence,'annotations': annotations,'features' : features}
+        {'sequence': sequence,'annotations': annotations,'features' : features,'related_sequences': related_sequences}
     )
 
 
@@ -63,7 +70,7 @@ def add_sequence(request):
         if form.is_valid():
             fasta_file = request.FILES['sequence_file']
             try:
-                annotations, sequences = extract_sequence_from_fasta(fasta_file)
+                annotations, sequences,ids = extract_sequence_from_fasta(fasta_file)
             except ValidationError as e:
                 messages.error(request, str(e))
                 return render(request, 'annotation/add_sequence.html', {'form': form})
@@ -75,13 +82,13 @@ def add_sequence(request):
                     if not is_prot(sequence) : 
                         invalid_sequences.append(i)
                         continue  #Passer la sequence si ce n'est pas de l'adn ou du prot
-
                 # Enregistrer chaque séquence valide dans la base de données
                 new_sequence = FaSequence(
                     status=form.cleaned_data['status'],
                     sequence=sequence,
                     #features_val=('|').join([annotations[i][key] for key in annotations[i]]),
-                    owner=request.user
+                    owner=request.user,
+                    identifiant=ids[i]
                 )
                 new_sequence.save()
                 new_sequence_ids.append(new_sequence.id) 
@@ -138,6 +145,7 @@ def extract_sequence_from_fasta(file):
         sequences=[]    # liste de sequences
         annotationsbyseq=[] # liste de dictionnaires de features pour chaque sequence
         annotations={}  # dictionnaire avec features : features values pour chaque features défini
+        id=[]
         #print(features_list)
         s=''
         for line in lines : 
@@ -146,6 +154,12 @@ def extract_sequence_from_fasta(file):
                 if annotationsbyseq!=[] : 
                     sequences.append(s)
                     s=''
+                if len(line.split(features_list[0])[0].split('cds'))>1 :
+                        id.append(line.split(features_list[0])[0].split('cds')[0].strip())[1:]
+                elif len(line.split(features_list[0])[0].split('pep'))>1 :
+                        id.append(line.split(features_list[0])[0].split('pep')[0].strip())[1:]
+                else : 
+                    id.append('Genome')
                 for f in features_list :
                     if len(line.split(f+':'))>1 : 
                         if f=='description' : 
@@ -159,7 +173,7 @@ def extract_sequence_from_fasta(file):
                 s=s+line.strip()
         sequences.append(s) # on oublie pas la derniere sequence
         #print(len(sequences),len(annotationsbyseq))
-        return annotationsbyseq,sequences
+        return annotationsbyseq,sequences,id
     except Exception as e:
         print(e)
         raise ValidationError('Erreur de lecture du fichier ')

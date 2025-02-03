@@ -25,6 +25,7 @@ def annotate_sequence(request, sequence_id):
                 content=annotation_content,
                 owner=request.user
             )
+
             return redirect('annotate_sequence', sequence_id=sequence.id)
     annotations = sequence.annotations.all()
     features=sequence.feature.all()
@@ -183,3 +184,29 @@ def extract_sequence_from_fasta(file):
 def delete_all_sequences(request):
     FaSequence.objects.all().delete()
     return HttpResponse("Toutes les séquences ont été supprimées.")
+
+
+def download_sequence_with_annotations(request, sequence_id):
+    sequence = get_object_or_404(FaSequence, id=sequence_id)
+    annotations = sequence.annotations.all()
+
+    # Créer le contenu du fichier
+    file_content = 'ID sequence '+str(sequence_id)+'\n'
+    file_content += "Statut: "+str(sequence.get_status_display())+"\n"
+    file_content += "Annotations:\n"
+    
+    if annotations.exists():
+        for annotation in annotations:
+            file_content += (
+                f"- {annotation.content} (Ajoutée le {annotation.created_at.strftime('%d-%m-%Y %H:%M')} "
+                f"par {annotation.owner.email})\n"
+            )
+    else:
+        file_content += "Aucune annotation disponible.\n"
+
+    file_content += " Séquence:\n"+str(sequence.sequence)+"\n"
+
+    # Générer le fichier pour le téléchargement
+    response = HttpResponse(file_content, content_type='text/plain')
+    response['Content-Disposition'] = f'attachment; filename=sequence_{sequence_id}_with_annotations.txt'
+    return response

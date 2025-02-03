@@ -26,6 +26,7 @@
     <span>(Ajoutée le {{ annotation.created_at|date:"d M Y H:i" }} par
       {{annotation.owner.email}})</span>
  {% endfor %}
+ 
 </ul>
 
 
@@ -42,4 +43,5 @@
 {% else %}
 <p>Aucune séquence liée trouvée.</p>
 {% endif %}
+<a href="{% url 'download_sequence_with_annotations' sequence.id %}">Télécharger la séquence avec annotations</a>
 {% endblock %}

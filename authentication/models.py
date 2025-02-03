@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.db import models
+from genhome.models import FaSequence
 
 class BioinfoUserManager(BaseUserManager):
     def create_user(self, email, password=None, requested_role=None, role=None):
@@ -74,6 +75,12 @@ class BioinfoUser(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.role == Role.ADMIN
+    
+    def owns_sequence(self) -> bool:
+        return FaSequence.objects.filter(owner=self).exists()
+    
+    def get_owned_sequences(self) -> models.QuerySet[FaSequence]:
+        return FaSequence.objects.filter(owner=self)
 
 class RoleRequestManager(models.Manager):
     def create_role_request(self, requester, requested_role):

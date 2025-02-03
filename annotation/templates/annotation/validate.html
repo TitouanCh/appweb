@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Validation{% endblock %}
+{% block content %}
+<h1>Validater annotations</h1>
+<h2>Mes Séquences :</h2>
+<ul>
+  {% for sequence in sequences %}
+    <li>
+      <p>
+        <h2>Séquence {{ sequence.id }}</h2>
+        <p>{{ sequence.get_status_display }}</p>
+        <pre>{{ sequence.sequence|slice:":80"}}</pre>
+      </p>
+      <ul>
+      {% for annotation in annotations %}
+      {% if annotation.sequence == sequence %}
+        <li>
+            <p>
+                {{ annotation.content }}
+                <span>(Ajoutée le {{ annotation.created_at|date:"d M Y H:i" }} par {{annotation.owner.email}}), status: {{annotation.get_status_as_html|safe}}</span>
+                {% if annotation.status == 'A' %}
+                    <span id="both{{annotation.id}}">
+                        <button data-number="{{annotation.id}}" class="accept">Accepter</button>
+                        <button data-number="{{annotation.id}}" class="refuse">Refuser</button>
+                    </span>
+                {% endif %}
+            </p>
+        </li>
+      {% endif %}
+      {% endfor %}
+      </ul>
+    </li>
+    <hr>
+  {% endfor %}
+</ul>
+
+<script>
+  let accept_buttons = document.getElementsByClassName("accept");
+  let refuse_buttons = document.getElementsByClassName("refuse");
+
+  for (button of accept_buttons) {
+    button.addEventListener("click", function() {
+      fetch("{% url 'process-annotation' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "type": "accept",
+          "request_id": this.getAttribute("data-number"),
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("both" + data.request_id).innerHTML = `<i>${data.display}</i>`;
+      });
+    });
+  }
+</script>
+
+{% endblock %}

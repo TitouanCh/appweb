@@ -46,3 +46,19 @@ class Feature(models.Model):
         related_name='feature',
         default=1 # TODO: changer
     )
+
+
+class Genome(models.Model) : 
+    name=models.CharField(
+        max_length=100,
+        default=1
+    )
+    annotation_state=models.CharField(
+        max_length=100,
+        choices=[
+            ("in_progress", "in progress"),
+            ("fully", "fully"),
+        ],
+        default='in_progress'
+    ) # A changer par le validateur 
+

@@ -70,6 +70,12 @@ def add_sequence(request):
         
         if form.is_valid():
             fasta_file = request.FILES['sequence_file']
+            existing_genome = form.cleaned_data['existing_genome']
+            new_genome_name = form.cleaned_data['new_genome']
+            if new_genome_name:
+                genome_, created = Genome.objects.get_or_create(name=new_genome_name)
+            else:
+                genome_= existing_genome
             try:
                 annotations, sequences,ids = extract_sequence_from_fasta(fasta_file)
             except ValidationError as e:
@@ -90,6 +96,7 @@ def add_sequence(request):
                     #features_val=('|').join([annotations[i][key] for key in annotations[i]]),
                     owner=request.user,
                     identifiant=ids[i]
+                    genome_=genome
                 )
                 new_sequence.save()
                 new_sequence_ids.append(new_sequence.id) 
@@ -156,9 +163,9 @@ def extract_sequence_from_fasta(file):
                     sequences.append(s)
                     s=''
                 if len(line.split(features_list[0])[0].split('cds'))>1 :
-                        id.append(line.split(features_list[0])[0].split('cds')[0].strip())[1:]
+                        id.append(line.split(features_list[0])[0].split('cds')[0].strip()[1:])
                 elif len(line.split(features_list[0])[0].split('pep'))>1 :
-                        id.append(line.split(features_list[0])[0].split('pep')[0].strip())[1:]
+                        id.append(line.split(features_list[0])[0].split('pep')[0].strip()[1:])
                 else : 
                     id.append('Genome')
                 for f in features_list :

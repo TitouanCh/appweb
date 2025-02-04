@@ -1,49 +1,48 @@
 {% extends "base.html" %}
-
-{% block title %}Accéder aux Bases de Données{% endblock %}
-
+{% block title %}Accéder aux bases de données{% endblock %}
 {% block content %}
 
 <h1>Accéder aux informations complémentaires des bases de données</h1>
-
-<form method="post" action="{% url 'blast_request' %}">
+<form method="post">
     {% csrf_token %}
-    <div style="margin-bottom: 20px;">
-        <label for="database"><strong>Sélectionnez une base de données :</strong></label>
-        <select id="database" name="database" required>
-            <option value="" disabled selected>-- Choisir une base --</option>
-            {% for db in databases %}
-                <option value="{{ db.id }}">{{ db.name }}</option>
-            {% endfor %}
-        </select>
-    </div>
+    <label for="database">Sélectionnez une base de données :</label>
+    <select id="database" name="database" required>
+        {% for db in databases %}
+            <option value="{{ db.id }}">{{ db.name }}</option>
+        {% endfor %}
+    </select>
 
-    <div style="margin-bottom: 20px;">
-        <label for="sequence"><strong>Entrez une séquence :</strong></label>
-        <textarea id="sequence" name="sequence" rows="5" cols="50" 
-                  placeholder="Collez votre séquence ici (nucléotidique ou peptidique)" required></textarea>
-    </div>
+    <label for="sequence_id">Sélectionnez une séquence enregistrée :</label>
+    <select id="sequence_id" name="sequence_id">
+        {% if sequences.exists %}
+            <option value="">-- Choisir une séquence locale --</option>
+            {% for seq in sequences %}
+                <option value="{{ seq.id }}">ID: {{ seq.id }}, Status: {{ seq.status }}, Sequence: {{ seq.sequence|slice:":30" }}...</option>
+            {% endfor %}
+        {% else %}
+            <option value="" disabled>Aucune séquence disponible</option>
+        {% endif %}
+    </select>
+
+    <label for="sequence">Ou entrez une séquence :</label>
+    <textarea id="sequence" name="sequence" rows="5" cols="50" placeholder="Collez votre séquence ici"></textarea>
 
     <button type="submit">Accéder</button>
 </form>
 
-<!-- Affichage de l'URL générée si disponible -->
-{% if redirect_url %}
-    <div style="margin-top: 20px; padding: 10px; border: 1px solid #ccc; background-color: #f9f9f9;">
-        <p>
-            Votre séquence a été analysée. Cliquez sur le lien ci-dessous pour accéder à l'outil approprié :
-        </p>
-        <a href="{{ redirect_url }}" target="_blank" style="color: #007bff; text-decoration: underline; font-weight: bold;">
-            Accéder à l'outil
-        </a>
-    </div>
+<h3>Debug : Séquences disponibles</h3>
+<ul>
+    {% for seq in sequences %}
+        <li>ID: {{ seq.id }}, Status: {{ seq.status }}, Sequence: {{ seq.sequence|slice:":30" }}...</li>
+    {% endfor %}
+</ul>
+
+{% if error_message %}
+    <p style="color: red;">{{ error_message }}</p>
 {% endif %}
 
-<!-- Affichage des erreurs -->
-{% if error_message %}
-    <div style="margin-top: 20px; padding: 10px; border: 1px solid red; background-color: #ffe5e5;">
-        <p style="color: red;">Erreur : {{ error_message }}</p>
-    </div>
+{% if redirect_url %}
+    <p>Votre séquence a été analysée. <a href="{{ redirect_url }}" target="_blank">Cliquez ici pour accéder à l'outil approprié.</a></p>
 {% endif %}
 
 {% endblock %}

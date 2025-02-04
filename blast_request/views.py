@@ -1,5 +1,7 @@
 from django.shortcuts import redirect, render
 from .models import Database
+from genhome.models import FaSequence
+
 
 def database_list(request):
     databases = Database.objects.all()
@@ -10,67 +12,72 @@ def database_list(request):
 
 def blast_request_view(request):
     """
-    Vue pour gérer l'accès aux bases de données et rediriger vers BlastN ou BlastP
-    avec la séquence préremplie selon le type.
+    Vue permettant d'accéder aux bases de données externes et de sélectionner des séquences locales ou saisies.
     """
+    # Récupération des bases de données disponibles
     databases = Database.objects.all()
-    redirect_url = None
+
+    # Initialiser les variables
+    sequences = FaSequence.objects.none()  # Aucun accès par défaut
     error_message = None
+    redirect_url = None
+    uniprot_sequence = None
 
+    # Charger les séquences si l'utilisateur est connecté
+    if request.user.is_authenticated:
+        sequences = FaSequence.objects.all()  # Charger toutes les séquences locales
+        print(f"Séquences disponibles pour {request.user.email} : {[seq.sequence[:30] for seq in sequences]}")
+    else:
+        print("Utilisateur non connecté : pas de séquences disponibles.")
+
+    # Si une requête POST est envoyée
     if request.method == 'POST':
-        # Récupération des données du formulaire
-        selected_db_id = request.POST.get('database')  # ID de la base sélectionnée
-        sequence = request.POST.get('sequence', '').strip()  # Séquence saisie
+        # Récupérer les données du formulaire
+        selected_db_id = request.POST.get('database')
+        sequence_id = request.POST.get('sequence_id')  # Séquence locale sélectionnée
+        sequence_input = request.POST.get('sequence', '').strip()  # Séquence saisie manuellement
 
-        # Debug : Afficher la séquence et l'ID sélectionné
-        print(f"Séquence saisie : {sequence}")
-        print(f"ID de la base sélectionnée : {selected_db_id}")
-
-        # Validation du champ séquence
-        if all(base in "ATCGUatcgu" for base in sequence):  # Séquence nucléotidique
-            tool = "blastn"
-        elif all(aa in "ACDEFGHIKLMNPQRSTVWYacdefghiklmnpqrstvwy" for aa in sequence):  # Séquence peptidique
-            tool = "blastp"
+        # Vérifier si une séquence a été sélectionnée ou saisie
+        if sequence_id:
+            try:
+                selected_sequence = FaSequence.objects.get(id=sequence_id)
+                sequence = selected_sequence.sequence
+            except FaSequence.DoesNotExist:
+                error_message = "Séquence sélectionnée invalide."
         else:
-            error_message = "La séquence entrée est invalide. Veuillez vérifier votre saisie."
-            print(f"Erreur de validation de séquence : {error_message}")  # Debug : Erreur
-            return render(request, 'blast_request.html', {
-                'databases': databases,
-                'error_message': error_message
-            })
+            sequence = sequence_input
 
-        # Récupération de la base de données sélectionnée
-        try:
-            selected_db = Database.objects.get(id=selected_db_id)
-
-            # Debug : Afficher les détails de la base sélectionnée
-            print(f"Base sélectionnée : {selected_db.name}")
-            print(f"URL générale : {selected_db.url}")
-            print(f"BlastN URL : {selected_db.blastn_url}")
-            print(f"BlastP URL : {selected_db.blastp_url}")
-
-            # Utiliser l'URL appropriée en fonction du type de séquence
-            if tool == "blastn" and selected_db.blastn_url:
-                redirect_url = f"{selected_db.blastn_url}{sequence}"
-                print(f"Redirection vers BlastN : {redirect_url}")  # Debug : URL générée pour BlastN
-            elif tool == "blastp" and selected_db.blastp_url:
-                redirect_url = f"{selected_db.blastp_url}{sequence}"
-                print(f"Redirection vers BlastP : {redirect_url}")  # Debug : URL générée pour BlastP
+        # Valider la séquence saisie
+        if sequence:
+            if all(base in "ATCGUatcgu" for base in sequence):  # Nucléotidique
+                tool = "blastn"
+            elif all(aa in "ACDEFGHIKLMNPQRSTVWYacdefghiklmnpqrstvwy" for aa in sequence):  # Peptidique
+                tool = "blastp"
             else:
-                error_message = "La base de données sélectionnée ne supporte pas ce type de séquence."
-                print(f"Erreur de compatibilité : {error_message}")  # Debug : Erreur
+                error_message = "La séquence entrée est invalide. Veuillez vérifier votre saisie."
 
-        except Database.DoesNotExist:
-            error_message = "Base de données sélectionnée non valide."
-            print(f"Erreur : {error_message}")  # Debug : Erreur
+            # Récupérer la base de données sélectionnée
+            if not error_message:
+                try:
+                    selected_db = Database.objects.get(id=selected_db_id)
+                    if "uniprot" in selected_db.url.lower():
+                        uniprot_sequence = sequence  # Pour UniProt
+                    elif tool == "blastn" and selected_db.blastn_url:
+                        redirect_url = f"{selected_db.blastn_url}{sequence}"
+                    elif tool == "blastp" and selected_db.blastp_url:
+                        redirect_url = f"{selected_db.blastp_url}{sequence}"
+                    else:
+                        error_message = "La base de données sélectionnée ne supporte pas ce type de séquence."
+                except Database.DoesNotExist:
+                    error_message = "Base de données sélectionnée invalide."
+        else:
+            error_message = "Aucune séquence n'a été saisie ou sélectionnée."
 
-    # Debug : Afficher l'URL finale ou le message d'erreur
-    print(f"URL utilisée pour la redirection : {redirect_url}")
-    print(f"Message d'erreur : {error_message}" if error_message else "Aucune erreur détectée.")
-
-    # Rendu de la page avec les bases disponibles et les erreurs ou redirections
+    # Rendre la page avec toutes les séquences et bases de données
     return render(request, 'blast_request.html', {
         'databases': databases,
+        'sequences': sequences,
         'redirect_url': redirect_url,
-        'error_message': error_message
+        'error_message': error_message,
+        'uniprot_sequence': uniprot_sequence,
     })

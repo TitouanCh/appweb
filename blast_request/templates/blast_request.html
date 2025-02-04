@@ -30,12 +30,6 @@
     <button type="submit">Accéder</button>
 </form>
 
-<h3>Debug : Séquences disponibles</h3>
-<ul>
-    {% for seq in sequences %}
-        <li>ID: {{ seq.id }}, Status: {{ seq.status }}, Sequence: {{ seq.sequence|slice:":30" }}...</li>
-    {% endfor %}
-</ul>
 
 {% if error_message %}
     <p style="color: red;">{{ error_message }}</p>

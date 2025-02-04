@@ -25,8 +25,8 @@ class FaSequence(models.Model):
     genome = models.ForeignKey(
         'annotation.Genome', 
         on_delete=models.CASCADE, 
-        related_name='Genome',
-        default='non defini'
+        related_name='sequence',
+        default=1
     )
     def __str__(self):
         return f"Statue :{self.status}, Owner: {self.owner.email}, Sequence: {self.sequence[:30]}...,id: {self.id},"

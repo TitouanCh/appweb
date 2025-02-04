@@ -95,8 +95,8 @@ def add_sequence(request):
                     sequence=sequence,
                     #features_val=('|').join([annotations[i][key] for key in annotations[i]]),
                     owner=request.user,
-                    identifiant=ids[i]
-                    genome_=genome
+                    identifiant=ids[i],
+                    genome=genome_
                 )
                 new_sequence.save()
                 new_sequence_ids.append(new_sequence.id) 

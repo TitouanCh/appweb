@@ -51,7 +51,7 @@ class Feature(models.Model):
 class Genome(models.Model) : 
     name=models.CharField(
         max_length=100,
-        default=1
+        default='non defini'
     )
     annotation_state=models.CharField(
         max_length=100,

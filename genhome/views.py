@@ -10,5 +10,5 @@ from django.shortcuts import render, get_object_or_404
 
 def home(request):
     #homepage avec toute les sequences 
-    sequences = FaSequence.objects.all()
+    sequences = FaSequence.objects.all()[:20]  
     return render(request, 'genhome/index.html', {'sequences':sequences})

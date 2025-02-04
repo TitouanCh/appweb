@@ -9,6 +9,15 @@
   {% csrf_token %}
   <input type="text" name="username" placeholder="Username"><br>
   <input type="password" name="password" placeholder="Password"><br>
+  <p>Please select your desired role:</p>
+  <input type="radio" id="lecteur" name="role" value="LE">
+  <label for="lecteur">Lecteur</label><br>
+  <input type="radio" id="annotateur" name="role" value="AN">
+  <label for="annotateur">Annotateur</label><br>
+  <input type="radio" id="validateur" name="role" value="VA">
+  <label for="validateur">Validateur</label><br>
+  <input type="radio" id="admin" name="role" value="AD">
+  <label for="admin">Admin</label><br>
   <input type="submit" value="Sign up">
 </form>
 {% endblock %}

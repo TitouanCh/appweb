@@ -7,6 +7,12 @@
 
 <form method="POST">
   {% csrf_token %}
+  <h2>Features :</h2>
+  <ul>
+    {% for ft in features %}
+    <li><strong>{{ ft.status }}</strong>: {{ ft.value }}</li>
+    {% endfor %}
+  </ul>
   <textarea name="annotation" rows="4" placeholder="Ajoutez une annotation"></textarea>
   <button type="submit">Soumettre</button>
 </form>

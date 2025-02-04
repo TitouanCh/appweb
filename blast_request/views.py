@@ -25,7 +25,7 @@ def blast_request_view(request):
 
     # Charger les séquences si l'utilisateur est connecté
     if request.user.is_authenticated:
-        sequences = FaSequence.objects.all()  # Charger toutes les séquences locales
+        sequences = FaSequence.objects.all()
         print(f"Séquences disponibles pour {request.user.email} : {[seq.sequence[:30] for seq in sequences]}")
     else:
         print("Utilisateur non connecté : pas de séquences disponibles.")
@@ -38,13 +38,14 @@ def blast_request_view(request):
         sequence_input = request.POST.get('sequence', '').strip()  # Séquence saisie manuellement
 
         # Vérifier si une séquence a été sélectionnée ou saisie
+        sequence = None
         if sequence_id:
             try:
                 selected_sequence = FaSequence.objects.get(id=sequence_id)
                 sequence = selected_sequence.sequence
             except FaSequence.DoesNotExist:
                 error_message = "Séquence sélectionnée invalide."
-        else:
+        elif sequence_input:
             sequence = sequence_input
 
         # Valider la séquence saisie
@@ -60,8 +61,8 @@ def blast_request_view(request):
             if not error_message:
                 try:
                     selected_db = Database.objects.get(id=selected_db_id)
-                    if "uniprot" in selected_db.url.lower():
-                        uniprot_sequence = sequence  # Pour UniProt
+                    if "uniprot" in selected_db.url.lower():  # Cas UniProt
+                        uniprot_sequence = sequence  # Sequence pour redirection UniProt
                     elif tool == "blastn" and selected_db.blastn_url:
                         redirect_url = f"{selected_db.blastn_url}{sequence}"
                     elif tool == "blastp" and selected_db.blastp_url:

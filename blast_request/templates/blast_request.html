@@ -30,13 +30,15 @@
     <button type="submit">Accéder</button>
 </form>
 
-
 {% if error_message %}
     <p style="color: red;">{{ error_message }}</p>
 {% endif %}
 
 {% if redirect_url %}
     <p>Votre séquence a été analysée. <a href="{{ redirect_url }}" target="_blank">Cliquez ici pour accéder à l'outil approprié.</a></p>
+{% elif uniprot_sequence %}
+    <p>Votre séquence pour UniProt est prête : {{ uniprot_sequence }}</p>
+    <p><a href="https://www.uniprot.org/blast/?sequence={{ uniprot_sequence }}" target="_blank">Cliquez ici pour accéder à UniProt.</a></p>
 {% endif %}
 
 {% endblock %}

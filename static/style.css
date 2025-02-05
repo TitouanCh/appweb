@@ -107,13 +107,103 @@ footer {
   text-decoration: underline;
 }
 
-.grow {
-  animation: grow-animation 2s ease-in-out infinite;
-  color: rgb(168, 168, 59);
+/* Input text joli */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="search"],
+input[type="url"],
+input[type="tel"],
+textarea {
+  width: 40vw;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  margin-bottom: 20px;
+  margin-top: 13px;
 }
 
-@keyframes grow-animation {
-  0% { transform: scale(1); }
-  50% {transform: scale(1.2); }
-  100% {transform: scale(1); }
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="search"]:focus,
+input[type="url"]:focus,
+input[type="tel"]:focus,
+textarea:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder,
+input[type="email"]::placeholder,
+input[type="search"]::placeholder,
+input[type="url"]::placeholder,
+input[type="tel"]::placeholder,
+textarea::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+input[type="text"]:hover,
+input[type="password"]:hover,
+input[type="email"]:hover,
+input[type="search"]:hover,
+input[type="url"]:hover,
+input[type="tel"]:hover,
+textarea:hover {
+  border-color: #aaa;
+}
+
+/* Keep radio buttons clean */
+input[type="radio"] {
+  accent-color: #007bff; /* For modern browsers, sets color */
+  width: auto;
+  height: auto; 
+  margin: 0 5px;
+}
+
+/* Style de base pour les boutons submit */
+input[type="submit"] {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background-color: rgba(0, 123, 255, 0.3);
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  width: 40vw;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* Effet au survol avec gradient */
+input[type="submit"]:hover {
+  background: linear-gradient(45deg, #007bff, #00c6ff);
+  color: white;
+  border-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Effet au clic */
+input[type="submit"]:active {
+  background-color: #0056b3;
+  border-color: #003366;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+  transform: translateY(2px);
+}
+
+/* Animation de focus */
+input[type="submit"]:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  border-color: #007bff;
 }

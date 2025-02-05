@@ -1,23 +1,58 @@
 {% extends "base.html" %}
 {% block title %}Home Page{% endblock %}
 {% block content %}
-<h1>Sign Up</h1>
+<h1>Créer un compte</h1>
 {% if error %}
 <p>{{ error }}</p>
 {% endif %}
-<form method="post" action="{% url 'signup' %}">
+<form method="post" action="{% url 'signup' %}" style="font-size: larger;">
   {% csrf_token %}
-  <input type="text" name="username" placeholder="Username"><br>
-  <input type="password" name="password" placeholder="Password"><br>
-  <p>Please select your desired role:</p>
-  <input type="radio" id="lecteur" name="role" value="LE">
-  <label for="lecteur">Lecteur</label><br>
-  <input type="radio" id="annotateur" name="role" value="AN">
-  <label for="annotateur">Annotateur</label><br>
-  <input type="radio" id="validateur" name="role" value="VA">
-  <label for="validateur">Validateur</label><br>
-  <input type="radio" id="admin" name="role" value="AD">
-  <label for="admin">Admin</label><br>
-  <input type="submit" value="Sign up">
+  <div>
+    <label for="username">Pseudo :</label><br>
+    <input type="text" name="username" placeholder="Pseudo"><br>
+    <label for="Mot de passe">Mot de passe :</label><br>
+    <input type="password" name="password" placeholder="Mot de passe"><br>
+  </div>
+
+  <div style="height: 60px; width: 42vw; background-image: url(/static/png/dna.png); background-size: 160px auto; animation: moveBackground 5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; margin-top: 30px; margin-bottom: 40px;">
+    <style>
+      @keyframes moveBackground {
+        0% {
+          background-position: 0 0;
+        }
+        100% {
+          background-position: 160px 0px;
+        }
+      }
+    </style>
+
+  </div>
+
+  <br>
+
+  <div>
+    <label for="name">Prénom :</label><br>
+    <input type="text" name="name" placeholder="Nom"><br>
+    <label for="last_name">Nom :</label><br>
+    <input type="text" name="last_name" placeholder="Prénom"><br>
+    <label for="numero">Numéro de téléphone :</label><br>
+    <input type="tel" name="numero" placeholder="Numéro de Téléphone"><br>
+  </div>
+
+  <div style="background-color: rgb(240, 240, 240); border: 2px solid rgb(207, 207, 207); padding: 20px; max-width: 30vw; border-radius: 12px;">
+    <p>Selectionnez votre rôle désiré :</p>
+    <input type="radio" id="lecteur" name="role" value="LE">
+    <label for="lecteur">Lecteur</label><br>
+    <input type="radio" id="annotateur" name="role" value="AN">
+    <label for="annotateur">Annotateur</label><br>
+    <input type="radio" id="validateur" name="role" value="VA">
+    <label for="validateur">Validateur</label><br>
+    <input type="radio" id="admin" name="role" value="AD">
+    <label for="admin">Admin</label><br>
+  </div>
+  
+  
+
+  <input type="submit" value="Créer votre compte" style="margin-top: 60px;">
 </form>
 {% endblock %}

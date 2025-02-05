@@ -54,6 +54,10 @@ class BioinfoUser(AbstractBaseUser):
         default=Role.ADMIN # A changer apres migration
     )
 
+    name = models.CharField(verbose_name="name", default="Bob", max_length=32)
+    last_name = models.CharField(verbose_name="last name", default="Marley", max_length=32)
+    numero = models.IntegerField(verbose_name="numero de téléphone", default=0)
+
     objects = BioinfoUserManager()
 
     USERNAME_FIELD = "email"
@@ -82,12 +86,14 @@ class BioinfoUser(AbstractBaseUser):
     def get_owned_sequences(self) -> models.QuerySet[FaSequence]:
         return FaSequence.objects.filter(owner=self)
 
+
 class RoleRequestManager(models.Manager):
     def create_role_request(self, requester, requested_role):
         if requested_role not in dict(Role.choices):
             raise ValidationError(f"Invalid role: {requested_role}")
 
         return self.create(requester=requester, requested_role=requested_role)
+
 
 class RoleRequest(models.Model):
     requested_role = models.CharField(

@@ -1,1 +1,116 @@
-/* TODO: faire une feuille de style */
+@font-face { /* Font basique que j'ai trouvé sur google font */
+    font-family: 'OpenSans';
+    src: url('/static/fonts/opensansregular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face { /* Italic */
+    font-family: 'OpenSans';
+    src: url('/static/fonts/opensansitalic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face { /* Bold */
+    font-family: 'OpenSans';
+    src: url('/static/fonts/opensansbold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+body {
+  margin: 0;
+  font-family: 'OpenSans', sans-serif;
+}
+
+nav {
+  background-color: #12122d;
+  color: #9d9da8;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+nav b {
+  color: #fff;
+}
+
+nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  align-items: center;
+}
+
+nav li {
+  margin-left: 20px;
+}
+
+nav .date {
+  margin-left: auto;
+  font-size: 14px;
+  color: #fff; 
+  font-weight: normal;
+}
+
+main {
+  margin-top: 80px;
+}
+
+article {
+  margin: 8%;
+}
+
+footer {
+  background-color: #12122d; /* Same as nav color */
+  color: #9d9da8; /* Same as nav color*/
+  font-size: 12px;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-section {
+  margin: 10px;
+  flex: 1 1 200px;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section a {
+  color: #9d9da8;
+  text-decoration: none;
+}
+
+.footer-section a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.grow {
+  animation: grow-animation 2s ease-in-out infinite;
+  color: rgb(168, 168, 59);
+}
+
+@keyframes grow-animation {
+  0% { transform: scale(1); }
+  50% {transform: scale(1.2); }
+  100% {transform: scale(1); }
+}

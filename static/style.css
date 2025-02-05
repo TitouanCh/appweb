@@ -1,23 +1,24 @@
-@font-face { /* Font basique que j'ai trouvé sur google font */
-    font-family: 'OpenSans';
-    src: url('/static/fonts/opensansregular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+@font-face {
+  font-family: 'OpenSans';
+  src: url('/static/fonts/opensansregular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
 
-@font-face { /* Italic */
-    font-family: 'OpenSans';
-    src: url('/static/fonts/opensansitalic.ttf') format('truetype');
-    font-weight: normal;
-    font-style: italic;
+@font-face {
+  font-family: 'OpenSans';
+  src: url('/static/fonts/opensansitalic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
 }
 
-@font-face { /* Bold */
-    font-family: 'OpenSans';
-    src: url('/static/fonts/opensansbold.ttf') format('truetype');
-    font-weight: 700;
-    font-style: normal;
+@font-face {
+  font-family: 'OpenSans';
+  src: url('/static/fonts/opensansbold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
 }
+
 
 body {
   margin: 0;

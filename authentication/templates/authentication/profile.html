@@ -2,4 +2,5 @@
 {% block title %}Profile{% endblock %}
 {% block content %}
 <h1>{{ request.user }}</h1>
+<p>Role: {{ request.user.get_role_display }}</p>
 {% endblock %}

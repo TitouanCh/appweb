@@ -8,5 +8,10 @@ urlpatterns = [
     path('add-sequence/', views.add_sequence, name='add_sequence'),
     path('delete-all-sequences/', views.delete_all_sequences, name='delete_all_sequences'),
     path('sequence/<int:sequence_id>/download_with_annotations/', views.download_sequence_with_annotations, name='download_sequence_with_annotations'),
+<<<<<<< HEAD
     path('genome/<int:genome_id>/sequences/', views.genome_sequences, name='genome_sequences'),
+=======
+    path('validate/', views.validate_annotations, name='validate'),
+    path('process-annotation/', views.process_annotations, name='process-annotation'),
+>>>>>>> main
 ]

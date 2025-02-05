@@ -1,4 +1,4 @@
-from django.http import HttpResponseForbidden,HttpResponse
+from django.http import HttpResponseForbidden,HttpResponse, JsonResponse
 from django.template import loader
 from django.shortcuts import render, get_object_or_404,redirect
 from .models import Annotation,Feature,Genome
@@ -7,7 +7,7 @@ from .forms import FaSequenceForm
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from genhome.models import FaSequence
-
+import json
 
 features_list=['chromosome','gene','transcript','gene_biotype','transcript_biotype','gene_symbol','description']
 
@@ -220,6 +220,7 @@ def download_sequence_with_annotations(request, sequence_id):
     return response
 
 
+<<<<<<< HEAD
 def genome_sequences(request, genome_id):
     genome = get_object_or_404(Genome, id=genome_id)
     sequences = FaSequence.objects.filter(genome=genome) [:20]
@@ -282,3 +283,53 @@ def import_sequences(fasta_file, status, owner, new_genome_name=None, existing_g
                 new_annotation.save()
 
     return new_sequence_ids, invalid_sequences
+=======
+def validate_annotations(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("You must be logged in to verify annotations.")
+    
+    if not request.user.owns_sequence():
+        return HttpResponseForbidden("You must own at least one sequence to verify annotations.")
+    
+
+    sequences = request.user.get_owned_sequences()
+    annotations = Annotation.objects.filter(sequence__in=sequences)
+
+    return render(
+        request, 
+        'annotation/validate.html', 
+        {'sequences': sequences,'annotations': annotations}
+    )
+
+
+def process_annotations(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("You must be logged in to verify annotations.")
+    
+    if not request.user.owns_sequence():
+        return HttpResponseForbidden("You must own at least one sequence to verify annotations.")
+    
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)  # Parse JSON data
+            request_id = data.get('request_id', None)
+            action_type = data.get('type', None)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        
+        annotation = Annotation.objects.get(id=request_id)
+        owned_sequences = request.user.get_owned_sequences()
+
+        if not owned_sequences.filter(id=annotation.sequence.id).exists(): # check if the user is validating a annotation from one of his sequence and not someone elses
+            return HttpResponseForbidden("This is not your sequence!")
+
+        if action_type == "accept":
+            annotation.accept()
+            return JsonResponse({'request_id': request_id, 'type': action_type, 'display': 'Acceptée'})
+        elif action_type == "deny":
+            annotation.deny()
+            return JsonResponse({'request_id': request_id, 'type': action_type, 'display': 'Refusée'})
+
+        return JsonResponse({'error': 'Invalid type'}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+>>>>>>> main

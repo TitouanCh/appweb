@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Genome_view{% endblock %}
+{% block content %}
+<h1>Séquences du génome : {{ genome.name }}</h1>
+
+<p><strong>{{ annotated_sequences_count }}</strong> séquences annotées sur <strong>{{ total_sequences_count }}</strong> séquences totales.</p>
+
+{% if sequences %}
+    <ul>
+        {% for sequence in sequences %}
+            <li>
+                <strong>{{ sequence.identifiant }}</strong> :
+                {{ sequence.sequence|slice:":50" }}...  
+                {% if sequence.is_annotated %}
+                    <span style="color: green;">(Annotée)</span>
+                {% else %}
+                    <span style="color: red;">(Non annotée)</span>
+                {% endif %}
+                <a href="{% url 'simple_view' sequence.id %}">Voir plus</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Aucune séquence trouvée pour ce génome.</p>
+{% endif %}
+{% endblock %}

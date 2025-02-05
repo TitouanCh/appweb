@@ -5,24 +5,19 @@
 <h1>Home Page</h1>
 <a href="{% url 'delete_all_sequences' %}">ATTENTION GROS BOUTOU ROUGE QUI SUPPRIME TOUTES LES SEQUENCES</a>
 <ul>
-  {% for sequence in sequences %}
+  {% for genome in genomes %}
   <li>
     <div>
-      <strong>ID : </strong>
-      <a href="{% url 'simple_view' sequence.id %}">{{ sequence.id }}</a>
-      <strong>Statue : </strong>
-      {{ sequence.get_status_display  }}
-      <strong>Owner : </strong>
-      {{ sequence.owner.email }}
-      <strong>Séquence : </strong>
-      {{ sequence.sequence|slice:":30"}}...
+      <strong>Génome :</strong>
+      <a href="{% url 'genome_sequences' genome.id %}">{{ genome.name }}</a>
     </div>
   </li>
   {% empty %}
   <li>
-    Aucune séquence enregistrée.
+    Aucun génome enregistré.
   </li>
   {% endfor %}
+</ul>
 </ul>
 
 <a href="{% url 'add_sequence' %}">Ajouter une séquence</a>

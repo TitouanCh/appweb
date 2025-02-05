@@ -61,4 +61,6 @@ class Genome(models.Model) :
         ],
         default='in_progress'
     ) # A changer par le validateur 
+    def __str__(self):
+        return self.name
 

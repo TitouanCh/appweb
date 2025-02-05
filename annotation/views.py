@@ -1,7 +1,7 @@
 from django.http import HttpResponseForbidden,HttpResponse
 from django.template import loader
 from django.shortcuts import render, get_object_or_404,redirect
-from .models import Annotation,Feature
+from .models import Annotation,Feature,Genome
 from django.urls import reverse
 from .forms import FaSequenceForm
 from django.contrib import messages
@@ -103,11 +103,12 @@ def add_sequence(request):
                 #Enregistrer les features de la sequence : 
                 for feature in features_list: 
                     if feature=='description' :
-                        new_annotations=Annotation(sequence=new_sequence,
-                                                   owner=request.user,
-                                                   content=annotations[i][feature]
-                                                   )
-                        new_annotations.save()
+                        if annotations[i][feature]!='non defini':
+                            new_annotations=Annotation(sequence=new_sequence,
+                                                    owner=request.user,
+                                                    content=annotations[i][feature]
+                                                    )
+                            new_annotations.save()  
                     else : 
                         new_feature=Feature(sequence=new_sequence,
                                             status=feature,
@@ -138,14 +139,14 @@ def is_dna(seq):
     return True
 
 def is_prot(seq) : 
-    for nucleotide in seq:
-        if nucleotide not in ['A', 'R',  'N',  'D',  'C', 'Q', 'E','G',  'H', 'I', 'L', 'K', 'M', 'F', 'P',  'S', 'T',  'W',  'Y',  'V',  'U',  'O'  ] :
+    for nucleotide in seq.strip():
+        if nucleotide not in ['A','B', 'R','N', 'D', 'C', 'Q', 'E','G','H', 'I','L', 'K', 'M', 'F', 'P','S', 'T', 'W', 'Y', 'V', 'U','X', 'O','Z' ] :
             return False
     return True
 
 
 def extract_sequence_from_fasta(file):
-    try:
+    try:        
         # Lire le contenu du fichier FASTA
         content = file.read().decode('utf-8')
         # Séparer par les lignes et ignorer les lignes qui commencent par '>'
@@ -158,7 +159,6 @@ def extract_sequence_from_fasta(file):
         s=''
         for line in lines : 
             if line.startswith('>'): 
-                #print('c')
                 if annotationsbyseq!=[] : 
                     sequences.append(s)
                     s=''
@@ -190,6 +190,7 @@ def extract_sequence_from_fasta(file):
 #Bouton Rouge attention 
 def delete_all_sequences(request):
     FaSequence.objects.all().delete()
+    Genome.objects.all().delete()
     return HttpResponse("Toutes les séquences ont été supprimées.")
 
 
@@ -217,3 +218,67 @@ def download_sequence_with_annotations(request, sequence_id):
     response = HttpResponse(file_content, content_type='text/plain')
     response['Content-Disposition'] = f'attachment; filename=sequence_{sequence_id}_with_annotations.txt'
     return response
+
+
+def genome_sequences(request, genome_id):
+    genome = get_object_or_404(Genome, id=genome_id)
+    sequences = FaSequence.objects.filter(genome=genome) [:20]
+
+    annotated_sequences_count = Annotation.objects.filter(sequence__genome=genome).values('sequence').distinct().count()
+    total_sequences_count = sequences.count()
+        # Ajouter une information sur chaque séquence pour savoir si elle est annotée ou non
+    for sequence in sequences:
+        sequence.is_annotated = Annotation.objects.filter(sequence=sequence).exists()
+
+
+    return render(request, 'annotation/genome_sequences.html', {
+        'genome': genome,
+        'sequences': sequences,
+        'annotated_sequences_count': annotated_sequences_count,
+        'total_sequences_count': total_sequences_count,
+    })
+
+
+def import_sequences(fasta_file, status, owner, new_genome_name=None, existing_genome=None):
+    sequences = []
+    ids = []
+    annotations = {}
+    try:
+        # Extraction des séquences et annotations
+        annotations, sequences, ids = extract_sequence_from_fasta(fasta_file)
+    except ValidationError as e:
+        raise ValidationError("Le fichier FASTA est invalide. Erreur : " + str(e))
+
+    if new_genome_name:
+        genome_, created = Genome.objects.get_or_create(name=new_genome_name)
+    else:
+        genome_ = existing_genome
+    # Enregistrer les séquences
+    invalid_sequences = []
+    new_sequence_ids = []
+    for i, sequence in enumerate(sequences):
+        if not is_dna(sequence) and not is_prot(sequence):
+            invalid_sequences.append(i)
+            continue
+
+        new_sequence = FaSequence(
+            status=status,
+            sequence=sequence,
+            owner=owner,
+            identifiant=ids[i],
+            genome=genome_
+        )
+        new_sequence.save()
+        new_sequence_ids.append(new_sequence.id)
+
+        # Enregistrer les annotations
+        for feature in annotations[i]:
+            if feature == 'description' and annotations[i][feature] != 'non defini':
+                new_annotation = Annotation(
+                    sequence=new_sequence,
+                    owner=owner,
+                    content=annotations[i][feature]
+                )
+                new_annotation.save()
+
+    return new_sequence_ids, invalid_sequences

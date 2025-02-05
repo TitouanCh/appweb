@@ -220,7 +220,6 @@ def download_sequence_with_annotations(request, sequence_id):
     return response
 
 
-<<<<<<< HEAD
 def genome_sequences(request, genome_id):
     genome = get_object_or_404(Genome, id=genome_id)
     sequences = FaSequence.objects.filter(genome=genome) [:20]
@@ -281,9 +280,14 @@ def import_sequences(fasta_file, status, owner, new_genome_name=None, existing_g
                     content=annotations[i][feature]
                 )
                 new_annotation.save()
+            else : 
+                new_feature=Feature(sequence=new_sequence,
+                                            status=feature,
+                                            value=annotations[i][feature],
+                                            owner=owner)
+                new_feature.save()
 
     return new_sequence_ids, invalid_sequences
-=======
 def validate_annotations(request):
     if not request.user.is_authenticated:
         return HttpResponseForbidden("You must be logged in to verify annotations.")
@@ -332,4 +336,3 @@ def process_annotations(request):
 
         return JsonResponse({'error': 'Invalid type'}, status=400)
     return JsonResponse({'error': 'Invalid request'}, status=400)
->>>>>>> main

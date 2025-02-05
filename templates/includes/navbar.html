@@ -14,8 +14,11 @@
           {% if request.user.role == 'AD' %}
             <li><a href="/role-requests/">Role requests</a></li>
           {% endif %}
+          {% if request.user.owns_sequence %}
+            <li><a href="/annotation/validate">Validate</a></li>
+          {% endif %}
           <li><a href="/logout">Logout</a></li>
-          {% else %}
+        {% else %}
           <li><a href="/login/">Login</a></li>
           <li><a href="/signup/">Sign Up</a></li>
         {% endif %}

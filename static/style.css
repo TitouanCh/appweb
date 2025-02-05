@@ -14,7 +14,7 @@
 
 @font-face {
   font-family: 'OpenSans';
-  src: url('/static/fonts/opensansbold.ttf') format('truetype');
+  src: url('/static/fonts/opensansmedium.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
 }

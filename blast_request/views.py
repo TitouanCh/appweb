@@ -61,7 +61,7 @@ def blast_request_view(request):
             # Récupérer la base de données sélectionnée et gérer la redirection
             if not error_message:
                 try:
-                    selected_db = Database.objects.get(id=selected_db_id)
+                    selected_db = BioDatabase.objects.get(id=selected_db_id)
 
                     if "uniprot" in selected_db.url.lower():
                         if tool == "blastp":

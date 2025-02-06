@@ -1,6 +1,5 @@
 from django.db import models
 
-#Faire class feature 
 
 class FaSequence(models.Model):
     status = models.CharField(
@@ -21,6 +20,12 @@ class FaSequence(models.Model):
     identifiant=models.CharField(
         max_length=100,
         default='Non defini'
+    )
+    genome = models.ForeignKey(
+        'annotation.Genome', 
+        on_delete=models.CASCADE, 
+        related_name='sequence',
+        default=1
     )
     def __str__(self):
         return f"Statue :{self.status}, Owner: {self.owner.email}, Sequence: {self.sequence[:30]}...,id: {self.id},"

@@ -7,8 +7,9 @@ from annotation.forms import FaSequenceForm
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, get_object_or_404
+from annotation.models import Genome
 
 def home(request):
-    #homepage avec toute les sequences 
-    sequences = FaSequence.objects.all()[:20]  
-    return render(request, 'genhome/index.html', {'sequences':sequences})
+    #homepage avec toute les genomes
+    genomes = Genome.objects.all()
+    return render(request, 'genhome/index.html', {'genomes':genomes})

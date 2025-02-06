@@ -8,11 +8,14 @@ from genhome.models import FaSequence
 class BioinfoUserManager(BaseUserManager):
     def create_user(self, email, password=None, requested_role=None, role=None, last_name=None, name=None, numero=None):
         # Create user
-        if not email:
-            raise ValueError("Les utilisateurs doivent obligatoirement posséder une adresse mail.")
+        if not email or not password:
+            raise ValueError("Les utilisateurs doivent obligatoirement posséder une adresse mail et un mot de passe.")
             
         if self.model.objects.filter(email=email).exists():
             raise ValueError("Un utilisateur avec cette adresse mail existe déjà.")
+        
+        if len(password) < 3: # Seulement 3 plus de facilité dans le débugage
+            raise ValueError("Le mot de passe doit faire au moins 3 charactères de long.")
         
         user = self.model(    
             email=self.normalize_email(email),

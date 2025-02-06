@@ -10,9 +10,9 @@
 <form method="post" action="{% url 'signup' %}" style="font-size: larger;">
   {% csrf_token %}
   <div>
-    <label for="username">Pseudo :</label><br>
+    <label for="username">Pseudo <a style="color: rgb(255, 104, 104);">*</a> : </label><br>
     <input type="text" name="username" placeholder="Pseudo"><br>
-    <label for="Mot de passe">Mot de passe :</label><br>
+    <label for="Mot de passe">Mot de passe <a style="color: rgb(255, 104, 104);">*</a> :</label><br>
     <input type="password" name="password" placeholder="Mot de passe"><br>
   </div>
 
@@ -32,7 +32,7 @@
 
   <div class="greybox">
     <p>Selectionnez votre rôle désiré :</p>
-    <input type="radio" id="lecteur" name="role" value="LE">
+    <input type="radio" id="lecteur" name="role" value="LE" checked>
     <label for="lecteur">Lecteur</label><br>
     <input type="radio" id="annotateur" name="role" value="AN">
     <label for="annotateur">Annotateur</label><br>
@@ -42,7 +42,7 @@
     <label for="admin">Admin</label><br>
   </div>
   
-  
+  <p><a style="color: rgb(255, 104, 104);">*</a> : ces champs sont obligatoires.</p>
 
   <input type="submit" value="Créer votre compte">
 </form>

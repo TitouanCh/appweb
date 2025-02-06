@@ -4,6 +4,7 @@ from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from genhome.models import FaSequence
+from annotation.models import Annotation
 
 class BioinfoUserManager(BaseUserManager):
     def create_user(self, email, password=None, requested_role=None, role=None, last_name=None, name=None, numero=None):
@@ -101,6 +102,9 @@ class BioinfoUser(AbstractBaseUser):
     
     def get_owned_sequences(self) -> models.QuerySet[FaSequence]:
         return FaSequence.objects.filter(owner=self)
+    
+    def get_owned_annotations(self) -> models.QuerySet[Annotation]:
+        return Annotation.objects.filter(owner=self)
 
 
 class RoleRequestManager(models.Manager):

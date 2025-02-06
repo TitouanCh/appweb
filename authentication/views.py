@@ -49,8 +49,11 @@ def signup_view(request):
 def profile_view(request):
     if not request.user.is_authenticated:
         return HttpResponseForbidden("You must be logged in to view your profile.")
+    
+    owned_annotation = request.user.get_owned_annotations()
+    owned_sequences = request.user.get_owned_sequences()
 
-    return render(request, 'authentication/profile.html')
+    return render(request, 'authentication/profile.html', {"annotations": owned_annotation, "sequences": owned_sequences})
 
 def request_view(request):
     if not(request.user.is_staff):

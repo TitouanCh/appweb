@@ -10,8 +10,8 @@
 <form method="post" action="{% url 'signup' %}" style="font-size: larger;">
   {% csrf_token %}
   <div>
-    <label for="username">Pseudo <a style="color: rgb(255, 104, 104);">*</a> : </label><br>
-    <input type="text" name="username" placeholder="Pseudo"><br>
+    <label for="username">Email <a style="color: rgb(255, 104, 104);">*</a> : </label><br>
+    <input type="text" name="username" placeholder="email@domain.com"><br>
     <label for="Mot de passe">Mot de passe <a style="color: rgb(255, 104, 104);">*</a> :</label><br>
     <input type="password" name="password" placeholder="Mot de passe"><br>
   </div>

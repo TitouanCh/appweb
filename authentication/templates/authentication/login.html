@@ -9,8 +9,8 @@
 {% endif %}
 <form method="post" action="{% url 'login' %}" style="font-size: larger;">
   {% csrf_token %}
-  <label for="username">Pseudo :</label><br>
-  <input type="text" name="username" placeholder="Pseudo"><br>
+  <label for="username">Email :</label><br>
+  <input type="text" name="username" placeholder="email@domain.com"><br>
   <label for="Mot de passe">Mot de passe :</label><br>
   <input type="password" name="password" placeholder="Mot de passe"><br>
   <div class="dna-seperator">

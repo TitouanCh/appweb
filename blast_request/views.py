@@ -14,14 +14,16 @@ def blast_request_view(request):
     """
     Vue permettant d'accéder aux bases de données externes et de sélectionner des séquences locales ou saisies.
     """
-    # 🔹 Vérification si l'utilisateur est connecté
+    # Vérification si l'utilisateur est connecté
     if not request.user.is_authenticated:
         print("Utilisateur non connecté : redirection vers la page de connexion.")
-        return redirect('/login/')  # 🔹 Redirige immédiatement vers la connexion
+        request.session['next'] = request.path  # Stocke l'URL actuelle dans la session
+        return redirect('/login/')
 
-    # 🔹 L'utilisateur est maintenant connecté, on charge les bases de données et séquences
+
+    # L'utilisateur est maintenant connecté, on charge les bases de données et séquences
     databases = Database.objects.all()
-    sequences = FaSequence.objects.all()  # 🔹 On charge directement toutes les séquences locales
+    sequences = FaSequence.objects.all()  # On charge directement toutes les séquences locales
 
     print(f"Séquences disponibles pour {request.user.email} : {[seq.sequence[:30] for seq in sequences]}")
 
@@ -77,7 +79,7 @@ def blast_request_view(request):
         else:
             error_message = "Aucune séquence n'a été saisie ou sélectionnée."
 
-    # 🔹 Rendu de la page avec les séquences immédiatement disponibles
+    # Rendu de la page avec les séquences immédiatement disponibles
     return render(request, 'blast_request.html', {
         'databases': databases,
         'sequences': sequences,

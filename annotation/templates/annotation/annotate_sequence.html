@@ -10,7 +10,8 @@
   <h2>Features :</h2>
   <ul>
     {% for ft in features %}
-    <li><strong>{{ ft.status }}</strong>: {{ ft.value }}</li>
+    <li><strong>{{ ft.status }}<input type="text" name="feature_{{ ft.id }}" value="{{ ft.value }}">
+    </li>
     {% endfor %}
   </ul>
   <textarea name="annotation" rows="4" placeholder="Ajoutez une annotation"></textarea>

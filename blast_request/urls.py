@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('databases/', views.database_list, name='database_list'),
+    path('', views.blast_request_view, name='blast_request_home'),  # 🔹 Rend accessible la bonne page dès l'accès
     path('blast_request/', views.blast_request_view, name='blast_request'),
 ]
 

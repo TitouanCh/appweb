@@ -68,11 +68,25 @@ class BioinfoUser(AbstractBaseUser):
         default=Role.ADMIN # A changer apres migration
     )
 
-    name = models.CharField(verbose_name="prénom", default="Non renseigné", max_length=32)
-    last_name = models.CharField(verbose_name="nom", default="Non renseigné", max_length=32)
+    name = models.CharField(
+        verbose_name="prénom", 
+        max_length=32, 
+        null=True,
+        blank=True
+    )
+    
+    last_name = models.CharField(
+        verbose_name="nom", 
+        max_length=32, 
+        null=True, 
+        blank=True
+    )
+    
     numero = models.CharField(
         max_length=15,
-        validators=[RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Enter a valid phone number.")]
+        validators=[RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Enter a valid phone number.")],
+        null=True, 
+        blank=True
     )
 
     objects = BioinfoUserManager()

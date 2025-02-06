@@ -80,6 +80,7 @@ def add_sequence(request):
             fasta_file = request.FILES['sequence_file']
             existing_genome = form.cleaned_data['existing_genome']
             new_genome_name = form.cleaned_data['new_genome']
+
             if new_genome_name:
                 genome_, created = Genome.objects.get_or_create(name=new_genome_name)
             else:
@@ -89,14 +90,17 @@ def add_sequence(request):
             except ValidationError as e:
                 messages.error(request, str(e))
                 return render(request, 'annotation/add_sequence.html', {'form': form})
-            
+
             invalid_sequences = []
             new_sequence_ids = []
+
+
             for i, sequence in enumerate(sequences):
                 if not is_dna(sequence):
                     if not is_prot(sequence) : 
                         invalid_sequences.append(i)
                         continue  #Passer la sequence si ce n'est pas de l'adn ou du prot
+                
                 # Enregistrer chaque séquence valide dans la base de données
                 new_sequence = FaSequence(
                     status=form.cleaned_data['status'],
@@ -107,7 +111,8 @@ def add_sequence(request):
                     genome=genome_
                 )
                 new_sequence.save()
-                new_sequence_ids.append(new_sequence.id) 
+                new_sequence_ids.append(new_sequence.id)
+
                 #Enregistrer les features de la sequence : 
                 for feature in features_list: 
                     if feature=='description' :
@@ -123,6 +128,9 @@ def add_sequence(request):
                                             value=annotations[i][feature],
                                             owner=request.user)
                         new_feature.save()
+                
+                print(f"{i} / {len(sequences)}")
+            
             # messages utilisateurs  
             if invalid_sequences:
                 messages.warning(request, f"attention il y a des sequences invalide apres header  : {', '.join(annotations[i])}")

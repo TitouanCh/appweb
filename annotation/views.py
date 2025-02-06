@@ -27,6 +27,14 @@ def annotate_sequence(request, sequence_id):
             )
 
             return redirect('annotate_sequence', sequence_id=sequence.id)
+        for feature in sequence.feature.all():
+            new_value = request.POST.get(f'feature_{feature.id}')
+            if new_value and new_value != feature.value:
+                feature.value = new_value
+                feature.save()
+
+        return redirect('annotate_sequence', sequence_id=sequence.id)
+
     annotations = sequence.annotations.all()
     features=sequence.feature.all()
 

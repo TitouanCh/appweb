@@ -77,6 +77,8 @@ article {
   padding: 20px;
   max-width: 30vw;
   border-radius: 12px;
+  margin-top: 50px;
+  margin-bottom: 60px;
 }
 
 .dna-seperator {
@@ -87,6 +89,16 @@ article {
   animation: moveBackground 5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
   margin-top: 30px;
   margin-bottom: 40px;
+}
+
+.greybox-error {
+  background-color: rgb(236, 212, 212);
+  border-color: rgb(255, 104, 104);
+}
+
+.error {
+  color: rgb(255, 104, 104);
+  font-weight: bold;
 }
 
 footer {

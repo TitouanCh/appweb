@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from genhome.models import FaSequence
@@ -8,7 +9,10 @@ class BioinfoUserManager(BaseUserManager):
     def create_user(self, email, password=None, requested_role=None, role=None, last_name=None, name=None, numero=None):
         # Create user
         if not email:
-            raise ValueError("Users must have an email address")
+            raise ValueError("Les utilisateurs doivent obligatoirement posséder une adresse mail.")
+            
+        if self.model.objects.filter(email=email).exists():
+            raise ValueError("Un utilisateur avec cette adresse mail existe déjà.")
         
         user = self.model(    
             email=self.normalize_email(email),
@@ -60,9 +64,12 @@ class BioinfoUser(AbstractBaseUser):
         default=Role.ADMIN # A changer apres migration
     )
 
-    name = models.CharField(verbose_name="prénom", default="Bob", max_length=32)
-    last_name = models.CharField(verbose_name="nom", default="Marley", max_length=32)
-    numero = models.IntegerField(verbose_name="numero de téléphone", default=0)
+    name = models.CharField(verbose_name="prénom", default="Non renseigné", max_length=32)
+    last_name = models.CharField(verbose_name="nom", default="Non renseigné", max_length=32)
+    numero = models.CharField(
+        max_length=15,
+        validators=[RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Enter a valid phone number.")]
+    )
 
     objects = BioinfoUserManager()
 

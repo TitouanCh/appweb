@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.core.exceptions import ValidationError
 from authentication.models import BioinfoUser, Role, RoleRequest
 from django.http import HttpResponseForbidden, JsonResponse
 import json
@@ -24,18 +25,23 @@ def logout_view(request):
 
 def signup_view(request):
     if request.method == 'POST':
-        email = request.POST['username']
-        password = request.POST['password']
-        requested_role = request.POST['role']
-        last_name = request.POST['last_name']
-        name = request.POST['name']
-        numero = request.POST['numero']
-        user = BioinfoUser.objects.create_user(email, password, requested_role=requested_role, last_name=last_name, name=name, numero=numero)
+        email = request.POST.get('username')
+        password = request.POST.get('password')
+        requested_role = request.POST.get('role')
+        last_name = request.POST.get('last_name')
+        name = request.POST.get('name')
+        numero = request.POST.get('numero')
+        try:
+            user = BioinfoUser.objects.create_user(email, password, requested_role=requested_role, last_name=last_name, name=name, numero=numero)
+        except ValueError as e:
+            return render(request, 'authentication/signup.html', {'error': f'Echec de la création du compte : {e}'})
+
         if user is not None:
             login(request, user)
-            return redirect('/')
+            msg = "Création de compte réussie, attendez la validation de votre rôle par un admin."
+            return redirect(f'/?message={msg}')
         else:
-            return render(request, 'authentication/signup.hmtl',
+            return render(request, 'authentication/signup.html',
                           {'error': 'Echec de la création du compte'})
     else:
         return render(request, 'authentication/signup.html')

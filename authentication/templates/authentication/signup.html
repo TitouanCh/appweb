@@ -3,7 +3,9 @@
 {% block content %}
 <h1>Créer un compte</h1>
 {% if error %}
-<p>{{ error }}</p>
+<div class="greybox greybox-error">
+  <p class="error">{{ error }}</p>
+</div>
 {% endif %}
 <form method="post" action="{% url 'signup' %}" style="font-size: larger;">
   {% csrf_token %}
@@ -42,6 +44,6 @@
   
   
 
-  <input type="submit" value="Créer votre compte" style="margin-top: 60px;">
+  <input type="submit" value="Créer votre compte">
 </form>
 {% endblock %}

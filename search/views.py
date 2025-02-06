@@ -1,32 +1,21 @@
 from django.shortcuts import render
-from django.shortcuts import render, get_object_or_404
-from django.shortcuts import render, get_object_or_404
-from search.models import Genome, GeneProtein
+from annotation.models import Genome
+from genhome.models import FaSequence
 from search.forms import SequenceSearchForm
 
 def search_sequences(request):
     form = SequenceSearchForm(request.GET or None)
     results = []
     if form.is_valid():
-        sequence = form.cleaned_data['sequence']
-        species = form.cleaned_data['species']
-        output_type = form.cleaned_data['output_type']
+        genome_name = form.cleaned_data.get('species', '')
+        sequence = form.cleaned_data.get('sequence', '')
         
-        if output_type == 'genome':
-            results = Genome.objects.all()
-            if sequence:
-                results = results.filter(sequence__icontains=sequence)
-            if species:
-                results = results.filter(species__icontains=species)
-        elif output_type == 'gene_protein':
-            results = GeneProtein.objects.all()
-            if sequence:
-                results = results.filter(sequence__icontains=sequence)
-            if species:
-                results = results.filter(genome__species__icontains=species)
+        if genome_name:
+            genome = Genome.objects.filter(name__icontains=genome_name).first()
+            if genome:
+                results = FaSequence.objects.filter(genome=genome)
+        elif sequence:
+            results = FaSequence.objects.filter(sequence__icontains=sequence)
 
     return render(request, 'search/search_results.html', {'form': form, 'results': results})
 
-def view_detail(request, id):
-    genome = get_object_or_404(Genome, id=id)
-    return render(request, 'genome_detail.html', {'genome': genome})

@@ -71,6 +71,24 @@ article {
   margin: 8%;
 }
 
+.greybox {
+  background-color: rgb(240, 240, 240);
+  border: 2px solid rgb(207, 207, 207);
+  padding: 20px;
+  max-width: 30vw;
+  border-radius: 12px;
+}
+
+.dna-seperator {
+  height: 60px;
+  width: 42vw;
+  background-image: url(/static/png/dna.png);
+  background-size: 160px auto;
+  animation: moveBackground 5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
 footer {
   background-color: #12122d; /* Same as nav color */
   color: #9d9da8; /* Same as nav color*/
@@ -206,4 +224,13 @@ input[type="submit"]:focus {
   outline: none;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   border-color: #007bff;
+}
+
+@keyframes moveBackground {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 160px 0px;
+  }
 }

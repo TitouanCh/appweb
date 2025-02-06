@@ -5,11 +5,17 @@ from django.db import models
 from genhome.models import FaSequence
 
 class BioinfoUserManager(BaseUserManager):
-    def create_user(self, email, password=None, requested_role=None, role=None):
+    def create_user(self, email, password=None, requested_role=None, role=None, last_name=None, name=None, numero=None):
         # Create user
         if not email:
             raise ValueError("Users must have an email address")
-        user = self.model(email=self.normalize_email(email))
+        
+        user = self.model(    
+            email=self.normalize_email(email),
+            last_name=last_name,
+            name=name,
+            numero=numero
+        )
         user.set_password(password)
         if not role:
             role = Role.ATTENTE
@@ -54,8 +60,8 @@ class BioinfoUser(AbstractBaseUser):
         default=Role.ADMIN # A changer apres migration
     )
 
-    name = models.CharField(verbose_name="name", default="Bob", max_length=32)
-    last_name = models.CharField(verbose_name="last name", default="Marley", max_length=32)
+    name = models.CharField(verbose_name="prénom", default="Bob", max_length=32)
+    last_name = models.CharField(verbose_name="nom", default="Marley", max_length=32)
     numero = models.IntegerField(verbose_name="numero de téléphone", default=0)
 
     objects = BioinfoUserManager()

@@ -27,7 +27,10 @@ def signup_view(request):
         email = request.POST['username']
         password = request.POST['password']
         requested_role = request.POST['role']
-        user = BioinfoUser.objects.create_user(email, password, requested_role=requested_role)
+        last_name = request.POST['last_name']
+        name = request.POST['name']
+        numero = request.POST['numero']
+        user = BioinfoUser.objects.create_user(email, password, requested_role=requested_role, last_name=last_name, name=name, numero=numero)
         if user is not None:
             login(request, user)
             return redirect('/')

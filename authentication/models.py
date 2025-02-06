@@ -1,15 +1,29 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from genhome.models import FaSequence
+from annotation.models import Annotation
 
 class BioinfoUserManager(BaseUserManager):
-    def create_user(self, email, password=None, requested_role=None, role=None):
+    def create_user(self, email, password=None, requested_role=None, role=None, last_name=None, name=None, numero=None):
         # Create user
-        if not email:
-            raise ValueError("Users must have an email address")
-        user = self.model(email=self.normalize_email(email))
+        if not email or not password:
+            raise ValueError("Les utilisateurs doivent obligatoirement posséder une adresse mail et un mot de passe.")
+            
+        if self.model.objects.filter(email=email).exists():
+            raise ValueError("Un utilisateur avec cette adresse mail existe déjà.")
+        
+        if len(password) < 3: # Seulement 3 plus de facilité dans le débugage
+            raise ValueError("Le mot de passe doit faire au moins 3 charactères de long.")
+        
+        user = self.model(    
+            email=self.normalize_email(email),
+            last_name=last_name,
+            name=name,
+            numero=numero
+        )
         user.set_password(password)
         if not role:
             role = Role.ATTENTE
@@ -54,6 +68,13 @@ class BioinfoUser(AbstractBaseUser):
         default=Role.ADMIN # A changer apres migration
     )
 
+    name = models.CharField(verbose_name="prénom", default="Non renseigné", max_length=32)
+    last_name = models.CharField(verbose_name="nom", default="Non renseigné", max_length=32)
+    numero = models.CharField(
+        max_length=15,
+        validators=[RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Enter a valid phone number.")]
+    )
+
     objects = BioinfoUserManager()
 
     USERNAME_FIELD = "email"
@@ -81,6 +102,10 @@ class BioinfoUser(AbstractBaseUser):
     
     def get_owned_sequences(self) -> models.QuerySet[FaSequence]:
         return FaSequence.objects.filter(owner=self)
+    
+    def get_owned_annotations(self) -> models.QuerySet[Annotation]:
+        return Annotation.objects.filter(owner=self)
+
 
 class RoleRequestManager(models.Manager):
     def create_role_request(self, requester, requested_role):
@@ -88,6 +113,7 @@ class RoleRequestManager(models.Manager):
             raise ValidationError(f"Invalid role: {requested_role}")
 
         return self.create(requester=requester, requested_role=requested_role)
+
 
 class RoleRequest(models.Model):
     requested_role = models.CharField(

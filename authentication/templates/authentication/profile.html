@@ -1,6 +1,80 @@
 {% extends "base.html" %}
 {% block title %}Profile{% endblock %}
 {% block content %}
-<h1>{{ request.user }}</h1>
-<p>Role: {{ request.user.get_role_display }}</p>
+<h1>Profile : {{ request.user }}</h1>
+<div class="dna-seperator" style="width: 95%;">
+</div>
+
+<div style="display: flex; justify-content: space-evenly;">
+    <div class="greybox" style="width: 80vw;">
+        <h2>Information du compte</h2>
+        <p>Role : {{ request.user.get_role_display }}</p>
+        <p>Date de création du compte : {{ request.user.date_joined }}</p>
+    </div>
+
+    <div class="greybox" style="width: 80vw;">
+        <h2>Information personnelle</h2>
+        <p>Numero de téléphone : 
+            {% if request.user.numero %}
+                {{ request.user.numero }}
+            {% else %}
+                <a style="font-style: italic; color: gray;">Non renseigné</a>
+            {% endif %}
+        </p>
+        <p>Nom : 
+            {% if request.user.last_name %}
+                {{ request.user.last_name }}
+            {% else %}
+                <a style="font-style: italic; color: gray;">Non renseigné</a>
+            {% endif %}
+        </p>
+        <p>Prénom : 
+            {% if request.user.name %}
+                {{ request.user.name }}
+            {% else %}
+                <a style="font-style: italic; color: gray;">Non renseigné</a>
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="dna-seperator" style="width: 95%;">
+</div>
+
+<div style="display: flex; justify-content: space-evenly;">
+    <div>
+        <h2>Mes séquences :</h2>
+        <ul>
+        {% for sequence in sequences %}
+        <li>
+        <p>
+            <h2>Séquence {{ sequence.id }}</h2>
+            <p>{{ sequence.get_status_display }}</p>
+            <pre>{{ sequence.sequence|slice:":80"}}</pre>
+        </p>
+        </li>
+        {% empty %}
+            <p>Vous ne possédez aucune séquence.</p>
+        {% endfor %}
+        
+    </ul>
+    </div>
+
+    <div>
+        <h2>Mes annotations :</h2>
+        <ul>
+            {% for annotation in annotations %}
+                <li>
+                    <p>
+                        {{ annotation.content }}
+                        <span>(Ajoutée le {{ annotation.created_at|date:"d M Y H:i" }} par {{annotation.owner.email}}), status: {{annotation.get_status_as_html|safe}}</span>
+                    </p>
+                </li>
+            {% empty %}
+                <p>Vous n'avez pas encore effectué d'annotation.</p>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
 {% endblock %}

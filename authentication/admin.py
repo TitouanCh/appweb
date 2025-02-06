@@ -19,7 +19,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = BioinfoUser
-        fields = ["email", "role"]
+        fields = ["email", "role", "name", "last_name", "numero"]
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -59,10 +59,11 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ["email", "date_joined", "role"]
+    list_display = ["email", "date_joined", "role", "name", "last_name", "numero"]
     fieldsets = [
         (None, {"fields": ["email", "password"]}),
         ("Permissions", {"fields": ["role"]}),
+        ("Personnel", {"fields": ["last_name", "name", "numero"]})
     ]
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -75,7 +76,7 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
     ]
-    search_fields = ["email"]
+    search_fields = ["email", "name", "last_name"]
     ordering = ["email"]
     filter_horizontal = []
     # Remove 'is_staff', 'is_superuser', and 'groups', and use available fields

@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'blast',
     'blast_request',
     'annotation',
-    'django_extensions'
+    'django_extensions',
+    'about'
 ]
 
 MIDDLEWARE = [

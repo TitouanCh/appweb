@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from blast_request.models import Database
+from blast_request.models import BioDatabase
 
 
 class Command(BaseCommand):
@@ -22,7 +22,7 @@ class Command(BaseCommand):
         ]
 
         for db_data in databases:
-            db, created = Database.objects.update_or_create(
+            db, created = BioDatabase.objects.update_or_create(
                 name=db_data["name"],
                 defaults=db_data
             )

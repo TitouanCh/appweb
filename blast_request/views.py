@@ -1,10 +1,10 @@
 from django.shortcuts import redirect, render
-from .models import Database
+from .models import BioDatabase
 from genhome.models import FaSequence
 
 
 def database_list(request):
-    databases = Database.objects.all()
+    databases = BioDatabase.objects.all()
     if request.method == "POST":
         return redirect('blast_request')
     return render(request, "blast_request.html", {"databases": databases})
@@ -22,7 +22,7 @@ def blast_request_view(request):
 
 
     # L'utilisateur est maintenant connecté, on charge les bases de données et séquences
-    databases = Database.objects.all()
+    databases = BioDatabase.objects.all()
     sequences = FaSequence.objects.all()  # On charge directement toutes les séquences locales
 
     print(f"Séquences disponibles pour {request.user.email} : {[seq.sequence[:30] for seq in sequences]}")
@@ -74,7 +74,7 @@ def blast_request_view(request):
                         redirect_url = f"{selected_db.blastp_url}{sequence}"
                     else:
                         error_message = "La base de données sélectionnée ne supporte pas ce type de séquence."
-                except Database.DoesNotExist:
+                except BioDatabase.DoesNotExist:
                     error_message = "Base de données sélectionnée invalide."
         else:
             error_message = "Aucune séquence n'a été saisie ou sélectionnée."

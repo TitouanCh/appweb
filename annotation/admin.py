@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import Annotation
 from genhome.models import FaSequence
+
+
 # Register your models here.
 @admin.register(Annotation)
 class AnnotationAdmin(admin.ModelAdmin):

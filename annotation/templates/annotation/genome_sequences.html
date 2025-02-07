@@ -20,6 +20,19 @@
             </li>
         {% endfor %}
     </ul>
+    <div class="pagination">
+        {% if sequences.has_previous %}
+            <a href="?page=1">Première</a>
+            <a href="?page={{ sequences.previous_page_number }}">Précédente</a>
+        {% endif %}
+
+        <span>Page {{ sequences.number }} sur {{ sequences.paginator.num_pages }}</span>
+
+        {% if sequences.has_next %}
+            <a href="?page={{ sequences.next_page_number }}">Suivante</a>
+            <a href="?page={{ sequences.paginator.num_pages }}">Dernière</a>
+        {% endif %}
+    </div>
 {% else %}
     <p>Aucune séquence trouvée pour ce génome.</p>
 {% endif %}

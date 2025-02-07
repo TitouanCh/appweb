@@ -58,7 +58,7 @@ pip install -r requirements.txt
 # 3. Configurer la base de données
 python manage.py migrate
 
-# *(Optionnel) : Créer des utilisateurs tests pour tester les fonctionnalités du site.
+# *(Optionnel) : Créer des utilisateurs tests pour tester les fonctionnalités du site
 python manage.py create_test_users
 
 # 4. Importer les données initiales

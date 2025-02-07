@@ -11,32 +11,22 @@ def database_list(request):
 
 
 def blast_request_view(request):
-    """
-    Vue permettant d'accéder aux bases de données externes et de sélectionner des séquences locales ou saisies.
-    """
-    # Vérification si l'utilisateur est connecté
     if not request.user.is_authenticated:
-        request.session['next'] = request.get_full_path()  # 🔹 Stocke l'URL actuelle dans la session
+        request.session['next'] = request.get_full_path()
         return redirect('/login/')
 
-
-    # L'utilisateur est maintenant connecté, on charge les bases de données et séquences
     databases = BioDatabase.objects.all()
-    sequences = FaSequence.objects.all()  # On charge directement toutes les séquences locales
+    sequences = FaSequence.objects.all()
 
-    #print(f"Séquences disponibles pour {request.user.email} : {[seq.sequence[:30] for seq in sequences]}")
-
-    # Initialisation des variables pour gérer la requête
     error_message = None
     redirect_url = None
+    selected_db_name = None  # Nouvelle variable pour stocker le nom de la base de données
 
-    # Traitement de la requête POST (si soumission du formulaire)
     if request.method == 'POST':
         selected_db_id = request.POST.get('database')
-        sequence_id = request.POST.get('sequence_id')  # Séquence locale sélectionnée
-        sequence_input = request.POST.get('sequence', '').strip()  # Séquence saisie manuellement
+        sequence_id = request.POST.get('sequence_id')
+        sequence_input = request.POST.get('sequence', '').strip()
 
-        # Vérifier si une séquence a été sélectionnée ou saisie
         sequence = None
         if sequence_id:
             try:
@@ -47,21 +37,19 @@ def blast_request_view(request):
         elif sequence_input:
             sequence = sequence_input
 
-        # Valider la séquence saisie
         if sequence:
-            if all(base in "ATCGUatcgu" for base in sequence):  # Séquence nucléotidique
+            if all(base in "ATCGUatcgu" for base in sequence):
                 tool = "blastn"
-            elif all(aa in "ACDEFGHIKLMNPQRSTVWYacdefghiklmnpqrstvwy" for aa in sequence):  # Séquence peptidique
+            elif all(aa in "ACDEFGHIKLMNPQRSTVWYacdefghiklmnpqrstvwy" for aa in sequence):
                 tool = "blastp"
             else:
-                error_message = "La séquence entrée est invalide. Veuillez vérifier votre saisie."
+                error_message = "La séquence entrée est invalide."
                 tool = None
 
-            # Récupérer la base de données sélectionnée et gérer la redirection
             if not error_message:
                 try:
                     selected_db = BioDatabase.objects.get(id=selected_db_id)
-
+                    selected_db_name = selected_db.name  # Récupérer le nom de la base de données
                     if "uniprot" in selected_db.url.lower():
                         if tool == "blastp":
                             redirect_url = f"https://www.uniprot.org/blast/?sequence={sequence}"
@@ -78,10 +66,10 @@ def blast_request_view(request):
         else:
             error_message = "Aucune séquence n'a été saisie ou sélectionnée."
 
-    # Rendu de la page avec les séquences immédiatement disponibles
     return render(request, 'blast_request.html', {
         'databases': databases,
         'sequences': sequences,
         'redirect_url': redirect_url,
         'error_message': error_message,
+        'selected_db_name': selected_db_name,  # Ajout au contexte
     })

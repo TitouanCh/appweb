@@ -27,7 +27,7 @@
     <label for="sequence">Ou entrez une séquence :</label>
     <textarea id="sequence" name="sequence" rows="5" cols="50" placeholder="Collez votre séquence ici"></textarea>
 
-    <button type="submit">Accéder</button>
+    <button type="submit">Vérification</button>
 </form>
 
 {% if error_message %}
@@ -35,7 +35,14 @@
 {% endif %}
 
 {% if redirect_url %}
-    <p>Votre séquence a été analysée. <a href="{{ redirect_url }}" target="_blank">Cliquez ici pour accéder à l'outil approprié.</a></p>
+    <div style="margin-top: 20px;">
+        <p style="color: green; font-weight: bold;">Votre séquence a un format valide (nucléotidique ou peptidique).</p>
+        <button onclick="window.open('{{ redirect_url }}', '_blank')" 
+                style="background-color: #007BFF; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer;">
+            Accéder maintenant à {{ selected_db_name }}
+        </button>
+    </div>
 {% endif %}
+
 
 {% endblock %}

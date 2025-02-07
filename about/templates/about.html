@@ -1,17 +1,45 @@
 {% extends "base.html" %}
-{% block title %}À propos{% endblock %}
+
+{% block title %}À propos de GenHome{% endblock %}
 
 {% block content %}
-<h1>À propos de GenHome</h1>
-<p>Bienvenue sur GenHome, une application web conçue pour l'annotation et l'analyse fonctionnelle de génomes bactériens.</p>
-<h2>Fonctionnalités principales :</h2>
-<ul>
-    <li>Gestion des utilisateurs avec des rôles différenciés (lecteur, annotateur, validateur).</li>
-    <li>Recherche et visualisation de génomes et de gènes.</li>
-    <li>Accès à des outils d'alignement de séquences (Blast).</li>
-    <li>Annotation et validation des génomes.</li>
-    <li>Accès aux bases de données externes comme UniProt et NCBI.</li>
-</ul>
-<h2>Objectifs :</h2>
-<p>Notre mission est de fournir une plateforme centralisée pour faciliter l'analyse et l'annotation des génomes bactériens.</p>
+<section class="about-section">
+    <h1>À propos de GenHome</h1>
+    <p>
+        Bienvenue sur GenHome, une application web dédiée à l'annotation et à l'analyse fonctionnelle des génomes bactériens. 
+        GenHome est conçu pour les chercheurs, étudiants et biologistes souhaitant explorer et travailler sur des données 
+        génomiques de manière collaborative.
+    </p>
+    <h2>Fonctionnalités principales :</h2>
+    <ul>
+        <li><strong>Gestion des utilisateurs</strong> : Attribution de rôles spécifiques (lecteur, annotateur, validateur) pour un accès différencié.</li>
+        <li><strong>Recherche génomique</strong> : Recherche avancée de motifs au seins d'un génome.</li>
+        <li><strong>Alignements de séquences</strong> : Intégration d'outils comme NCBI Blast et UniProt Blast pour analyser des séquences nucléotidiques ou peptidiques.</li>
+        <li><strong>Annotation des séquences</strong> : Ajout, modification et validation d'annotations pour des génomes spécifiques.</li>
+        <li><strong>Interopérabilité</strong> : Accès direct à des bases de données externes comme UniProt et NCBI.</li>
+    </ul>
+
+    <h2>Objectifs :</h2>
+    <p>
+        Notre objectif est de fournir une plateforme centralisée, conviviale et performante pour faciliter l'analyse et l'annotation des génomes. 
+        Nous mettons un point d'honneur à garantir la collaboration entre utilisateurs tout en maintenant une structure sécurisée et fiable.
+    </p>
+
+    <h2>Comment utiliser GenHome ?</h2>
+    <p>
+        Voici un aperçu des étapes principales pour commencer à utiliser GenHome :
+    </p>
+    <ol>
+        <li><strong>Créer un compte :</strong> Inscrivez-vous en fournissant vos informations personnelles et en choisissant votre rôle.</li>
+        <li><strong>Connexion :</strong> Une fois votre compte activé, connectez-vous pour accéder à vos fonctionnalités dédiées.</li>
+        <li><strong>Rechercher :</strong> Utilisez l'outil de recherche pour explorer les génomes ou les séquences d'intérêt.</li>
+        <li><strong>Aligner :</strong> Explorez les données disponibles et faîtes des requêtes blast pour vous aider dans vos annotations.</li>
+        <li><strong>Annoter :</strong> Si vous êtes annotateur ou validateur, accédez aux séquences assignées pour ajouter ou valider des annotations.</li>
+    </ol>
+
+    <h2>Contact</h2>
+    <p>
+        Pour toute question ou assistance, veuillez contacter l'administrateur du site à <a href="mailto:support@genhome.com">support@genhome.com</a>.
+    </p>
+</section>
 {% endblock %}

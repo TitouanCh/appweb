@@ -4,8 +4,9 @@
 <h1> Séquence {{ sequence.id }}</h1>
 <p>{{ sequence.get_status_display }}</p>
 <pre>{{ sequence.sequence|slice:":80"}}</pre>
-
-
+{% if sequence.owner %}
+<p>Validateur : {{ sequence.owner }}</p>
+{% endif %}
 
 <h2>Features :</h2>
 <ul>

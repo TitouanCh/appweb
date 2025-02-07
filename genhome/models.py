@@ -16,7 +16,10 @@ class FaSequence(models.Model):
         'authentication.BioinfoUser',
         on_delete=models.CASCADE,
         related_name='fa_sequences',
+        null=True,  
+        blank=True  # Allow to be empty
     )
+
     identifiant=models.CharField(
         max_length=100,
         default='Non defini'

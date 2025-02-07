@@ -1,5 +1,6 @@
+import random
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from django.db import models
@@ -42,6 +43,12 @@ class BioinfoUserManager(BaseUserManager):
         user = self.create_user(email, password=password, role=Role.ADMIN)
         user.save(using=self._db)
         return user
+    
+    def get_random_validator(self):
+        validators = self.filter(role=Role.VALIDATEUR)
+        if validators.exists():
+            return random.choice(validators)
+        raise ObjectDoesNotExist("Aucun utilisateur avec le rôle 'validateur' n'a été trouvé.")
 
 
 class Role(models.TextChoices):

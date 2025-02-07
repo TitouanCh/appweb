@@ -28,9 +28,6 @@ class Command(BaseCommand):
 
                     # Chemin complet du fichier FASTA
                     fasta_path = os.path.join(status_dir, fasta_file)
-
-                    # Préparer un faux utilisateur pour l'import (à adapter selon tes besoins)
-                    user = BioinfoUser.objects.first()  # Tu peux aussi créer un utilisateur spécifique si besoin
                     
                     # Appeler la fonction `add_sequence` avec un fichier fictif dans la commande
                     with open(fasta_path, 'rb') as f:
@@ -40,7 +37,7 @@ class Command(BaseCommand):
                             new_sequence_ids, invalid_sequences = import_sequences(
                                 fasta_file=file_data,
                                 status=statue_dic[status_folder],  
-                                owner=user,  
+                                owner=None,  
                                 new_genome_name=fasta_file,  
                                 existing_genome=None  
                             )

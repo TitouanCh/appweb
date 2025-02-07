@@ -59,7 +59,8 @@ pip install -r requirements.txt
 python manage.py migrate
 
 # 4. Importer les données initiales
-python manage.py import-my-data
+python manage.py import_sequences
+python manage.py import_databases
 
 # 5. Lancer le serveur Django
 python manage.py runserver

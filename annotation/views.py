@@ -69,10 +69,12 @@ def simple_view(request, sequence_id):
             identifiant=sequence.identifiant
         ).exclude(id=sequence.id)
         print(sequence)
+    valid_annotations = annotations.filter(status='V')
+    waiting_annotations = annotations.filter(status='A')
     return render(
         request, 
         'annotation/simple_view.html', 
-        {'sequence': sequence,'annotations': annotations,'features' : features,'related_sequences': related_sequences}
+        {'sequence': sequence,'valid_annotations': valid_annotations, 'waiting_annotations': waiting_annotations, 'annotations': annotations, 'features' : features,'related_sequences': related_sequences}
     )
 
 

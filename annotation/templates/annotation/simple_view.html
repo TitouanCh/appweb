@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Annotation view{% endblock %}
 {% block content %}
-<h1> Séquence {{ sequence.id }}</h1>
+<h1 style="min-width: 1000px;"> Séquence {{ sequence.id }}</h1>
 <p>{{ sequence.get_status_display }}</p>
 <pre>{{ sequence.sequence|slice:":80"}}</pre>
 {% if sequence.owner %}
@@ -25,22 +25,87 @@
 {% if sequence.annotateur and request.user == sequence.annotateur %}
   <a href="{% url 'annotate_sequence' sequence.id %}">Ajouter des annotations</a>    
 {% endif %}
-<ul>
-  {% for annotation in annotations %}
-  <li>
-    {{ annotation.content }}
-    <span>( Ajoutée le {{ annotation.created_at|date:"d M Y H:i" }}
-      {% if annotation.owner %}
-        par {{annotation.owner.email}}
-      {% endif %})
+
+{% if annotations %}
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'Tab1')">Validés</button>
+  <button class="tablinks" onclick="openTab(event, 'Tab2')">En attente de validation</button>
+</div>
+
+<div id="Tab1" class="tabcontent greybox">
+  {% if valid_annotations %}
+    <ul>
+      {% for annotation in valid_annotations %}
+        <li>
+          {{ annotation.content }}
+          <span>( Ajoutée le {{ annotation.created_at|date:"d M Y H:i" }}
+            {% if annotation.owner %}
+              par {{annotation.owner.email}}
+            {% endif %})
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <span>
+      Aucune annotation n'a été validé, veuillez attendre que le validateur valide une annotation.
     </span>
-  </li>
-  {% empty %}
+  {% endif %}
+</div>
+
+<div id="Tab2" class="tabcontent greybox">
+  {% if waiting_annotations %}
+    <ul>
+      {% for annotation in waiting_annotations %}
+        <li>
+          {{ annotation.content }}
+          <span>( Ajoutée le {{ annotation.created_at|date:"d M Y H:i" }}
+            {% if annotation.owner %}
+              par {{annotation.owner.email}}
+            {% endif %})
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <span>
+      Aucune annotation en attente.
+    </span>
+  {% endif %}
+</div>
+
+<script>
+  function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+
+    // Hide all tab contents
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+
+    // Remove "active" class from all buttons
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab and add an "active" class to the button that opened it
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+
+  // Optionally, open the first tab by default when the page loads
+  document.addEventListener("DOMContentLoaded", function() {
+    document.getElementsByClassName("tablinks")[0].click();
+  });
+</script>
+
+{% else %}
   <span>
-    Pas d'annotations sur cette séquence, <b style="font-weight: bolder;">vous devez être l'annotateur de cette séquence pour ajouter une annotation</b>.
+    Pas d'annotations pour le moment sur cette séquence, <b style="font-weight: bolder;">vous devez être l'annotateur de cette séquence pour ajouter une annotation</b>.
   </span>
-  {% endfor %}
-</ul>
+{% endif %}
 
 <h2>Genome associé :</h2>
 <p><a href="{% url 'genome_sequences' sequence.genome.id %}">Voir le génome {{ sequence.genome.name }}</a></p>

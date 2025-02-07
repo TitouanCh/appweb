@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Annotate Sequence{% endblock %}
 {% block content %}
-<h1> Séquence {{ sequence.id }}</h1>
+<h1 style="min-width: 1000px;"> Séquence {{ sequence.id }}</h1>
 <p>{{ sequence.get_status_display }}</p>
 <pre>{{ sequence.sequence|slice:":80"}}</pre>
 

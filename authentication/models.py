@@ -1,5 +1,6 @@
+import random
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from django.db import models
@@ -42,6 +43,26 @@ class BioinfoUserManager(BaseUserManager):
         user = self.create_user(email, password=password, role=Role.ADMIN)
         user.save(using=self._db)
         return user
+    
+    def get_random_validator(self):
+        validators = self.filter(role=Role.VALIDATEUR)
+        if validators.exists():
+            return random.choice(validators)
+        raise ObjectDoesNotExist("Aucun utilisateur avec le rôle 'validateur' n'a été trouvé.")
+    
+    def get_least_assigned_annotateur(self):
+        annotateurs = self.filter(role=Role.ANNOTATEUR).annotate(
+            annotation_count=models.Count('annotated_fa_sequences')
+        )
+
+        if not annotateurs.exists():
+            raise ObjectDoesNotExist("Aucun utilisateur avec le rôle 'annotateur' n'a été trouvé.")
+        
+        min_count = annotateurs.aggregate(min_assignments=models.Count('annotated_fa_sequences'))['min_assignments']
+        least_assigned_annotateurs = annotateurs.filter(annotation_count=min_count)
+
+        # Return a random annotateur if there's a tie
+        return random.choice(list(least_assigned_annotateurs))
 
 
 class Role(models.TextChoices):

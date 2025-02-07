@@ -23,8 +23,11 @@
   {% for annotation in annotations %}
   <li>
     {{ annotation.content }}
-    <span>(Ajoutée le {{ annotation.created_at|date:"d M Y H:i" }} par
-      {{annotation.owner.email}})</span>
+    <span>( Ajoutée le {{ annotation.created_at|date:"d M Y H:i" }}
+      {% if annotation.owner %}
+        par {{annotation.owner.email}}
+      {% endif %})
+    </span>
     <a href="{% url 'delete_annotation' annotation.id %}" title="Supprimer" style="background-color: red ; color: red; border: none; border-radius: 50%; width: 30px; height: 30px; text-align: center; padding: 5px; display: inline-block; line-height: 20px;">✖ </a>
   {% endfor %}
 </ul>

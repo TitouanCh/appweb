@@ -1,4 +1,4 @@
-# 🧬 Projet Web – M2 AMI2B 2024-2025
+# Projet Web – M2 AMI2B 2024-2025
 
 
 ## 🚀 Conception d’une application web pour l’annotation et l’analyse fonctionnelle de génomes bactériens
@@ -57,6 +57,9 @@ pip install -r requirements.txt
 
 # 3. Configurer la base de données
 python manage.py migrate
+
+# *(Optionnel) : Créer des utilisateurs tests pour tester les fonctionnalités du site.
+python manage.py create_test_users
 
 # 4. Importer les données initiales
 python manage.py import_sequences

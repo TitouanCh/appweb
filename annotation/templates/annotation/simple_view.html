@@ -6,6 +6,7 @@
 <pre>{{ sequence.sequence|slice:":80"}}</pre>
 {% if sequence.owner %}
 <p>Validateur : {{ sequence.owner }}</p>
+<p>Annotateur : {{ sequence.annotateur }}</p>
 {% endif %}
 
 <h2>Features :</h2>
@@ -19,13 +20,18 @@
 
 
 <h2>Annotations :</h2>
-<a href="{% url 'annotate_sequence' sequence.id %}">Ajouter des annotations</a>    
-<ul>
+{% if sequence.annotateur and request.user == sequence.annotateur %}
+  <a href="{% url 'annotate_sequence' sequence.id %}">Ajouter des annotations</a>    
+{% endif %}
+  <ul>
   {% for annotation in annotations %}
   <li>
     {{ annotation.content }}
-    <span>(Ajoutée le {{ annotation.created_at|date:"d M Y H:i" }} par
-      {{annotation.owner.email}})</span>
+    <span>( Ajoutée le {{ annotation.created_at|date:"d M Y H:i" }}
+      {% if annotation.owner %}
+        par {{annotation.owner.email}}
+      {% endif %})
+    </span>
  {% endfor %}
  
 </ul>

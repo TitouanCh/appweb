@@ -10,7 +10,6 @@ from annotation.views import import_sequences
 class Command(BaseCommand):
     help = 'Charge toutes les séquences depuis les fichiers FASTA dans le dossier data'
 
-    
     def handle(self, *args, **kwargs):
         statue_dic = {'CDS':"Coding DNA Sequence",'Genome_complet':"Full Genome", 'Liste_Peptides':"Peptide Sequence"}
         data_dir = 'data/'  # Dossier où sont stockés les fichiers
@@ -39,7 +38,8 @@ class Command(BaseCommand):
                                 status=statue_dic[status_folder],  
                                 owner=None,  
                                 new_genome_name=fasta_file,  
-                                existing_genome=None  
+                                existing_genome=None,
+                                random_owner=True
                             )
                             if invalid_sequences:
                                 self.stdout.write(self.style.WARNING(f"Attention, certaines séquences sont invalides : {', '.join(str(i) for i in invalid_sequences)}"))

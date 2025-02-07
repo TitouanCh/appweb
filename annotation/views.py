@@ -7,7 +7,7 @@ from .forms import FaSequenceForm
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from genhome.models import FaSequence
-from authentication.models import BioinfoUserManager
+from authentication.models import BioinfoUser
 import json
 
 features_list=['chromosome','gene','transcript','gene_biotype','transcript_biotype','gene_symbol','description']
@@ -17,6 +17,10 @@ def annotate_sequence(request, sequence_id):
 
     if not request.user.is_authenticated: # TODO: Checker les droits de l'utilisateur aussi
         return HttpResponseForbidden("You must be logged in to create an annotation.")
+    
+    if sequence.owner is None:
+        return HttpResponseForbidden("Cette séquence ne peut pas être annotée.")
+
 
     if request.method == 'POST':
         annotation_content = request.POST.get('annotation')
@@ -103,10 +107,14 @@ def add_sequence(request, random_owner=False):
                         continue  #Passer la sequence si ce n'est pas de l'adn ou du prot
                 
                 owner = None
+                annotateur = None
                 if not random_owner:
                     owner = request.user
                 else:
-                    owner = BioinfoUserManager.get_random_validator()
+                    owner = BioinfoUser.objects.get_random_validator()
+                
+                if owner is not None:
+                    annotateur = BioinfoUser.objects.get_least_assigned_annotateur()
 
                 # Enregistrer chaque séquence valide dans la base de données
                 new_sequence = FaSequence(
@@ -114,6 +122,7 @@ def add_sequence(request, random_owner=False):
                     sequence=sequence,
                     #features_val=('|').join([annotations[i][key] for key in annotations[i]]),
                     owner=owner,
+                    annotateur=annotateur,
                     identifiant=ids[i],
                     genome=genome_
                 )
@@ -316,12 +325,16 @@ def import_sequences(fasta_file, status, owner, new_genome_name=None, existing_g
                                             owner=owner)
                 new_feature.save()
         
-        # Si la séquence n'a pas d'annotation/description, on lui ajoute un validateur
+        # Si la séquence n'a pas d'annotation/description, on lui ajoute un validateur & un annotateur
         if not annotation_flag:
             if random_owner:
-                owner = BioinfoUserManager.get_random_validator()
+                owner = BioinfoUser.objects.get_random_validator()
             
             new_sequence.owner = owner
+
+            if owner is not None:
+                new_sequence.annotateur = BioinfoUser.objects.get_least_assigned_annotateur()
+            
             new_sequence.save()
         
 

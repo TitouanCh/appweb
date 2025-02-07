@@ -15,7 +15,15 @@ class FaSequence(models.Model):
     owner = models.ForeignKey(
         'authentication.BioinfoUser',
         on_delete=models.CASCADE,
-        related_name='fa_sequences',
+        related_name='owned_fa_sequences',
+        null=True,  
+        blank=True  # Allow to be empty
+    )
+
+    annotateur = models.ForeignKey(
+        'authentication.BioinfoUser',
+        on_delete=models.CASCADE,
+        related_name='annotated_fa_sequences',
         null=True,  
         blank=True  # Allow to be empty
     )
@@ -31,4 +39,7 @@ class FaSequence(models.Model):
         default=1
     )
     def __str__(self):
-        return f"Statue :{self.status}, Owner: {self.owner.email}, Sequence: {self.sequence[:30]}...,id: {self.id},"
+        owner_str = ""
+        if self.owner is not None:
+            f"Owner: {self.owner.email},"
+        return f"Statue :{self.status}, {owner_str} Sequence: {self.sequence[:30]}...,id: {self.id},"

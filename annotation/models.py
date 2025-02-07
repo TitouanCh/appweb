@@ -81,6 +81,12 @@ class Feature(models.Model):
         blank=True  # Allow to be empty
     )
 
+    def get_status_capitalize(self) -> str:
+        return self.status.replace("_", " ").capitalize()
+    
+    def get_value_capitalize(self) -> str:
+        return self.value.capitalize()
+
 
 class Genome(models.Model) : 
     name=models.CharField(

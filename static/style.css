@@ -15,7 +15,7 @@
 @font-face {
   font-family: 'OpenSans';
   src: url('/static/fonts/opensansmedium.ttf') format('truetype');
-  font-weight: 700;
+  font-weight: bold;
   font-style: normal;
 }
 
@@ -80,6 +80,11 @@ main {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   animation: fadeIn 1s ease-in-out;
+}
+
+.blue-cool {
+  color: #2c3e50;
+  font-weight: bold;
 }
 
 .greybox {

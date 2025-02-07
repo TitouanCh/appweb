@@ -51,6 +51,7 @@
             <h2>Séquence {{ sequence.id }}</h2>
             <p>{{ sequence.get_status_display }}</p>
             <pre>{{ sequence.sequence|slice:":80"}}</pre>
+            <button type="button" onclick="window.location.href='{% url 'simple_view' sequence.id %}'">Y aller</button>
         </p>
         </li>
         {% empty %}

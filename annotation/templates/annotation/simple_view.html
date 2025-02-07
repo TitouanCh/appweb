@@ -5,25 +5,27 @@
 <p>{{ sequence.get_status_display }}</p>
 <pre>{{ sequence.sequence|slice:":80"}}</pre>
 {% if sequence.owner %}
+<div class="greybox blue-cool">
 <p>Validateur : {{ sequence.owner }}</p>
 <p>Annotateur : {{ sequence.annotateur }}</p>
+</div>
 {% endif %}
 
 <h2>Features :</h2>
 <ul>
   {% for ft in features %}
-  <li><strong>{{ ft.status }}</strong>: {{ ft.value }}</li>
+  <li><strong>{{ ft.get_status_capitalize }} :</strong> {{ ft.get_value_capitalize }}</li>
   {% endfor %}
 </ul>
+
 <form method="POST">
 </form>
-
 
 <h2>Annotations :</h2>
 {% if sequence.annotateur and request.user == sequence.annotateur %}
   <a href="{% url 'annotate_sequence' sequence.id %}">Ajouter des annotations</a>    
 {% endif %}
-  <ul>
+<ul>
   {% for annotation in annotations %}
   <li>
     {{ annotation.content }}
@@ -32,9 +34,14 @@
         par {{annotation.owner.email}}
       {% endif %})
     </span>
- {% endfor %}
- 
+  </li>
+  {% empty %}
+  <span>
+    Pas d'annotations sur cette séquence, <b style="font-weight: bolder;">vous devez être l'annotateur de cette séquence pour ajouter une annotation</b>.
+  </span>
+  {% endfor %}
 </ul>
+
 <h2>Genome associé :</h2>
 <p><a href="{% url 'genome_sequences' sequence.genome.id %}">Voir le génome {{ sequence.genome.name }}</a></p>
 

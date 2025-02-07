@@ -10,11 +10,11 @@
   <h2>Features :</h2>
   <ul>
     {% for ft in features %}
-    <li><strong>{{ ft.status }}</strong>:    <input type="text" name="feature_{{ ft.id }}" value="{{ ft.value }}">
+    <li><strong>{{ ft.get_status_capitalize }} :</strong>    <input type="text" name="feature_{{ ft.id }}" value="{{ ft.value }}">
     </li>
     {% endfor %}
   </ul>
-  <textarea name="annotation" rows="4" placeholder="Ajoutez une annotation"></textarea>
+  <textarea name="annotation" rows="4" placeholder="Ajoutez une annotation"></textarea></br>
   <button type="submit">Soumettre</button>
 </form>
 
@@ -29,6 +29,11 @@
       {% endif %})
     </span>
     <a href="{% url 'delete_annotation' annotation.id %}" title="Supprimer" style="background-color: red ; color: red; border: none; border-radius: 50%; width: 30px; height: 30px; text-align: center; padding: 5px; display: inline-block; line-height: 20px;">✖ </a>
+  </li>
+  {% empty %}
+  <span>
+    Pas d'annotations sur cette séquence.
+  </span>
   {% endfor %}
 </ul>
 {% endblock %}

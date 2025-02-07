@@ -136,7 +136,7 @@ class BioinfoUser(AbstractBaseUser):
         return FaSequence.objects.filter(owner=self).exists()
     
     def get_owned_sequences(self) -> models.QuerySet[FaSequence]:
-        return FaSequence.objects.filter(owner=self)
+        return FaSequence.objects.filter(models.Q(owner=self) | models.Q(annotateur=self))
     
     def get_owned_annotations(self) -> models.QuerySet[Annotation]:
         return Annotation.objects.filter(owner=self)

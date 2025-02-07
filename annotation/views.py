@@ -247,8 +247,12 @@ def download_sequence_with_annotations(request, sequence_id):
         for annotation in annotations:
             file_content += (
                 f"- {annotation.content} (Ajoutée le {annotation.created_at.strftime('%d-%m-%Y %H:%M')} "
-                f"par {annotation.owner.email})\n"
+                
             )
+            if not(annotation.owner is None): 
+                file_content+=f"par {annotation.owner})\n"
+            else :
+                file_content+=' ) \n'
     else:
         file_content += "Aucune annotation disponible.\n"
 

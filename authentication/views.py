@@ -6,18 +6,26 @@ from django.http import HttpResponseForbidden, JsonResponse
 import json
 #source: https://www.codeswithpankaj.com/post/create-a-login-logout-system-in-django-step-by-step-instructions
 
+
 def login_view(request):
+    # Si l'utilisateur est déjà connecté, le rediriger vers la page demandée ou l'accueil
+    if request.user.is_authenticated:
+        return redirect(request.session.pop('next', '/'))
+
+    # Si l'utilisateur arrive sur la page login avec une URL 'next', on la stocke en session
+    if 'next' in request.GET:
+        request.session['next'] = request.GET['next']
+
     if request.method == 'POST':
-        email = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, email=email, password=password)
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('/')
-        else:
-            return render(request, 'authentication/login.html', {'error': 'Erreur d\'authentification'})
-    else:
-        return render(request, 'authentication/login.html')
+            next_url = request.session.pop('next', '/')  # Récupère l'URL stockée ou redirige vers "/"
+            return redirect(next_url)  # Redirection après connexion
+    return render(request, 'authentication/login.html')
+
 
 def logout_view(request):
     logout(request)

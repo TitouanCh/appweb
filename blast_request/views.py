@@ -16,8 +16,7 @@ def blast_request_view(request):
     """
     # Vérification si l'utilisateur est connecté
     if not request.user.is_authenticated:
-        print("Utilisateur non connecté : redirection vers la page de connexion.")
-        request.session['next'] = request.path  # Stocke l'URL actuelle dans la session
+        request.session['next'] = request.get_full_path()  # 🔹 Stocke l'URL actuelle dans la session
         return redirect('/login/')
 
 
@@ -25,7 +24,7 @@ def blast_request_view(request):
     databases = BioDatabase.objects.all()
     sequences = FaSequence.objects.all()  # On charge directement toutes les séquences locales
 
-    print(f"Séquences disponibles pour {request.user.email} : {[seq.sequence[:30] for seq in sequences]}")
+    #print(f"Séquences disponibles pour {request.user.email} : {[seq.sequence[:30] for seq in sequences]}")
 
     # Initialisation des variables pour gérer la requête
     error_message = None

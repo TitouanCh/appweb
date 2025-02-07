@@ -9,6 +9,7 @@
 {% endif %}
 <form method="post" action="{% url 'login' %}" style="font-size: larger;">
   {% csrf_token %}
+  <input type="hidden" name="next" value="{{ request.GET.next }}">
   <label for="username">Email :</label><br>
   <input type="text" name="username" placeholder="email@domain.com"><br>
   <label for="Mot de passe">Mot de passe :</label><br>

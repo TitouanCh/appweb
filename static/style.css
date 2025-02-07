@@ -19,29 +19,46 @@
   font-style: normal;
 }
 
-
 body {
   margin: 0;
   font-family: 'OpenSans', sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  line-height: 1.6;
+  transition: background 0.5s ease-in-out;
 }
 
 nav {
-  background-color: #12122d;
-  color: #9d9da8;
+  background-color: #2c3e50;
+  color: #ecf0f1;
   position: fixed;
   top: 0;
   width: 100%;
   display: flex;
   justify-content: space-between;
+  padding: 15px 20px;
+  transition: top 0.3s ease-in-out, background 0.3s ease-in-out;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+nav:hover {
+  background-color: #34495e;
 }
 
 nav b {
   color: #fff;
+  font-size: 1.2em;
 }
 
 nav a {
   color: inherit;
   text-decoration: none;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: #3498db;
+  text-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
 }
 
 nav ul {
@@ -54,196 +71,90 @@ nav li {
   margin-left: 20px;
 }
 
-nav .date {
-  margin-left: auto;
-  font-size: 14px;
-  color: #fff; 
-  font-weight: normal;
-}
-
 main {
   margin-top: 80px;
-  min-height: 100vh;
-  margin-left: 5vw;
-}
-
-article {
-  margin: 8%;
+  padding: 20px;
+  max-width: 1200px;
+  margin: auto;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .greybox {
-  background-color: rgb(240, 240, 240);
-  border: 2px solid rgb(207, 207, 207);
+  background-color: #ecf0f1;
+  border: 1px solid #bdc3c7;
   padding: 20px;
-  max-width: 30vw;
-  border-radius: 12px;
-  margin-top: 50px;
-  margin-bottom: 60px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
 }
 
-.dna-seperator {
-  height: 60px;
-  width: 42vw;
-  background-image: url(/static/png/dna.png);
-  background-size: 160px auto;
-  animation: moveBackground 5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
-  margin-top: 30px;
-  margin-bottom: 40px;
-}
-
-.greybox-error {
-  background-color: rgb(236, 212, 212);
-  border-color: rgb(255, 104, 104);
-}
-
-.error {
-  color: rgb(255, 104, 104);
-  font-weight: bold;
+.greybox:hover {
+  transform: scale(1.02);
 }
 
 footer {
-  background-color: #12122d; /* Same as nav color */
-  color: #9d9da8; /* Same as nav color*/
-  font-size: 12px;
+  background-color: #2c3e50;
+  color: #ecf0f1;
   padding: 20px 0;
-  margin-top: 100px;
   text-align: center;
+  font-size: 14px;
+  margin-top: 50px;
+  transition: background 0.3s ease-in-out;
 }
 
-.footer-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  max-width: 1200px;
-  margin: 0 auto;
+footer:hover {
+  background-color: #34495e;
 }
 
-.footer-section {
-  margin: 10px;
-  flex: 1 1 200px;
-}
-
-.footer-section ul {
-  list-style: none;
-  padding: 0;
-}
-
-.footer-section a {
-  color: #9d9da8;
-  text-decoration: none;
-}
-
-.footer-section a:hover {
-  color: #fff;
-  text-decoration: underline;
-}
-
-/* Input text joli */
 input[type="text"],
 input[type="password"],
 input[type="email"],
-input[type="search"],
-input[type="url"],
-input[type="tel"],
 textarea {
-  width: 40vw;
+  width: 100%;
   padding: 10px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
+  border: 1px solid #bdc3c7;
+  border-radius: 5px;
   font-size: 16px;
-  outline: none;
   transition: border-color 0.3s, box-shadow 0.3s;
-  margin-bottom: 20px;
-  margin-top: 13px;
 }
 
 input[type="text"]:focus,
 input[type="password"]:focus,
 input[type="email"]:focus,
-input[type="search"]:focus,
-input[type="url"]:focus,
-input[type="tel"]:focus,
 textarea:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  border-color: #3498db;
+  box-shadow: 0 0 8px rgba(52, 152, 219, 0.7);
 }
 
-input[type="text"]::placeholder,
-input[type="password"]::placeholder,
-input[type="email"]::placeholder,
-input[type="search"]::placeholder,
-input[type="url"]::placeholder,
-input[type="tel"]::placeholder,
-textarea::placeholder {
-  color: #999;
-  font-style: italic;
-}
-
-input[type="text"]:hover,
-input[type="password"]:hover,
-input[type="email"]:hover,
-input[type="search"]:hover,
-input[type="url"]:hover,
-input[type="tel"]:hover,
-textarea:hover {
-  border-color: #aaa;
-}
-
-/* Keep radio buttons clean */
-input[type="radio"] {
-  accent-color: #007bff; /* For modern browsers, sets color */
-  width: auto;
-  height: auto; 
-  margin: 0 5px;
-}
-
-/* Style de base pour les boutons submit */
-input[type="submit"] {
-  padding: 10px 20px;
+button {
+  padding: 12px 25px;
   font-size: 16px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  background-color: rgba(0, 123, 255, 0.3);
-  color: #333;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.3s ease;
-  margin-top: 10px;
-  margin-bottom: 20px;
-  width: 40vw;
-  text-transform: uppercase;
-  font-weight: bold;
-}
-
-/* Effet au survol avec gradient */
-input[type="submit"]:hover {
-  background: linear-gradient(45deg, #007bff, #00c6ff);
+  border: none;
+  border-radius: 5px;
+  background: linear-gradient(45deg, #3498db, #2c3e50);
   color: white;
-  border-color: #0056b3;
-  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
-  transform: translateY(-2px);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Effet au clic */
-input[type="submit"]:active {
-  background-color: #0056b3;
-  border-color: #003366;
-  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
-  transform: translateY(2px);
+button:hover {
+  background: linear-gradient(45deg, #2980b9, #2c3e50);
+  transform: translateY(-3px);
 }
 
-/* Animation de focus */
-input[type="submit"]:focus {
-  outline: none;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-  border-color: #007bff;
+button:active {
+  transform: scale(0.98);
 }
 
-@keyframes moveBackground {
-  0% {
-    background-position: 0 0;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-  100% {
-    background-position: 160px 0px;
+  to {
+    opacity: 1;
   }
 }

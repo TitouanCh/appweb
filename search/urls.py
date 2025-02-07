@@ -1,8 +1,6 @@
 from django.urls import path
-
-from . import views
+from search.views import search_sequences
 
 urlpatterns = [
-    path('search/', views.search_sequences, name='search_sequences'),
-    path('detail/<int:id>/', views.view_detail, name='view_detail')
+    path('search/', search_sequences, name='search_sequences'),
 ]

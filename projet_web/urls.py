@@ -17,13 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls.conf import include
+from about.views import about_view  
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('genhome.urls')),
     path('', include('authentication.urls')),
     path('', include('search.urls')),
-    path('blast/', include('blast.urls')),
     path('blast-request/', include('blast_request.urls')),
     path('annotation/', include('annotation.urls')),
+    path('about/', about_view, name='about'),
 ]

@@ -1,24 +1,25 @@
 <nav>
     <ul>
-        <li><b>Notre site incroyable</b></li>
+        {% load static %}
+        <li><img src="{% static 'svg/dna-white.svg' %}" alt="DNA" style="height: 16px; transform: scale(2.5) translate(-1px, 1px);"></li>
+        <li><b>GenHome</b></li>
         <li><a href="/">Accueil</a></li>
-        <li><a href="/search/">Search</a></li>
-        <li><a href="/blast/">Blast</a></li>
-        <li><a href="/blast-request/">External</a></li>
-        <li><a href="/about/">About</a></li>
+        <li><a href="/search/">Recherche</a></li>
+        <li><a href="/blast-request/">Blast Externe</a></li>
+        <li><a href="{% url 'about' %}">À propos</a></li>
         {% if request.user.is_authenticated %}
           <li>Hello {{ request.user }}</li>
-          <li><a href="/profile/">My profile</a></li>
+          <li><a href="/profile/">Mon profile</a></li>
           {% if request.user.role == 'AD' %}
             <li><a href="/role-requests/">Role requests</a></li>
           {% endif %}
           {% if request.user.owns_sequence %}
             <li><a href="/annotation/validate">Validate</a></li>
           {% endif %}
-          <li><a href="/logout">Logout</a></li>
+          <li><a href="/logout">Déconnexion</a></li>
         {% else %}
-          <li><a href="/login/">Login</a></li>
-          <li><a href="/signup/">Sign Up</a></li>
+          <li><a href="/login/">Connexion</a></li>
+          <li><a href="/signup/">S'inscrire</a></li>
         {% endif %}
     </ul>
 </nav>

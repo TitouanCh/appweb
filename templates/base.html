@@ -6,13 +6,74 @@
     <title>{% block title %}My Site{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'svg/dna.svg' %}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: top 0.3s;
+            z-index: 1000;
+        }
+        main {
+            padding: 80px 20px 20px;
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #2c3e50;
+            color: white;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .content {
+            flex: 1;
+        }
+    </style>
 </head>
 <body>
-    {% include "includes/navbar.html" %}
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
-    {% include "includes/footer.html" %}
+    <header id="navbar">
+        {% include "includes/navbar.html" %}
+    </header>
+    <div class="container">
+        <main class="content">
+            {% include "includes/message.html" %}
+            {% block content %}
+            {% endblock %}
+        </main>
+        <footer>
+            <p>&copy; 2025 GenHome. Absolutely no rights reserved.</p>
+        </footer>
+    </div>
+    <script>
+        let lastScrollTop = 0;
+        window.addEventListener("scroll", function() {
+            let navbar = document.getElementById("navbar");
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop) {
+                navbar.style.top = "-60px"; // Hide navbar when scrolling down
+            } else {
+                navbar.style.top = "0"; // Show navbar when scrolling up
+            }
+            lastScrollTop = scrollTop;
+        });
+    </script>
 </body>
 </html>

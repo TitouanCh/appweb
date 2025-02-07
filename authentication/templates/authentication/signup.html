@@ -1,23 +1,49 @@
 {% extends "base.html" %}
 {% block title %}Home Page{% endblock %}
 {% block content %}
-<h1>Sign Up</h1>
+<h1>Créer un compte</h1>
 {% if error %}
-<p>{{ error }}</p>
+<div class="greybox greybox-error">
+  <p class="error">{{ error }}</p>
+</div>
 {% endif %}
-<form method="post" action="{% url 'signup' %}">
+<form method="post" action="{% url 'signup' %}" style="font-size: larger;">
   {% csrf_token %}
-  <input type="text" name="username" placeholder="Username"><br>
-  <input type="password" name="password" placeholder="Password"><br>
-  <p>Please select your desired role:</p>
-  <input type="radio" id="lecteur" name="role" value="LE">
-  <label for="lecteur">Lecteur</label><br>
-  <input type="radio" id="annotateur" name="role" value="AN">
-  <label for="annotateur">Annotateur</label><br>
-  <input type="radio" id="validateur" name="role" value="VA">
-  <label for="validateur">Validateur</label><br>
-  <input type="radio" id="admin" name="role" value="AD">
-  <label for="admin">Admin</label><br>
-  <input type="submit" value="Sign up">
+  <div>
+    <label for="username">Email <a style="color: rgb(255, 104, 104);">*</a> : </label><br>
+    <input type="text" name="username" placeholder="email@domain.com"><br>
+    <label for="Mot de passe">Mot de passe <a style="color: rgb(255, 104, 104);">*</a> :</label><br>
+    <input type="password" name="password" placeholder="Mot de passe"><br>
+  </div>
+
+  <div class="dna-seperator">
+  </div>
+
+  <br>
+
+  <div>
+    <label for="name">Prénom :</label><br>
+    <input type="text" name="name" placeholder="Nom"><br>
+    <label for="last_name">Nom :</label><br>
+    <input type="text" name="last_name" placeholder="Prénom"><br>
+    <label for="numero">Numéro de téléphone :</label><br>
+    <input type="tel" name="numero" placeholder="Numéro de Téléphone"><br>
+  </div>
+
+  <div class="greybox">
+    <p>Selectionnez votre rôle désiré :</p>
+    <input type="radio" id="lecteur" name="role" value="LE" checked>
+    <label for="lecteur">Lecteur</label><br>
+    <input type="radio" id="annotateur" name="role" value="AN">
+    <label for="annotateur">Annotateur</label><br>
+    <input type="radio" id="validateur" name="role" value="VA">
+    <label for="validateur">Validateur</label><br>
+    <input type="radio" id="admin" name="role" value="AD">
+    <label for="admin">Admin</label><br>
+  </div>
+  
+  <p><a style="color: rgb(255, 104, 104);">*</a> : ces champs sont obligatoires.</p>
+
+  <input type="submit" value="Créer votre compte">
 </form>
 {% endblock %}

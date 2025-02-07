@@ -25,10 +25,15 @@ class Annotation(models.Model):
         'authentication.BioinfoUser',
         on_delete=models.CASCADE,
         related_name='annotations',
-        default=1 # TODO: changer
+        null=True,  
+        blank=True  # Allow to be empty
     )
+
     def __str__(self):
-        return f"Annotation for Sequence ID {self.sequence.id}, Owner: {self.owner.email}, Status: {self.status}"
+        owner_str = ""
+        if self.owner is not None:
+            owner_str = f"Owner: {self.owner.email},"
+        return f"Annotation for Sequence ID {self.sequence.id}, {owner_str} Status: {self.status}"
     
     def get_status_as_html(self) -> str:
         match self.status:
@@ -72,7 +77,8 @@ class Feature(models.Model):
         'authentication.BioinfoUser',
         on_delete=models.CASCADE,
         related_name='feature',
-        default=1 # TODO: changer
+        null=True,  
+        blank=True  # Allow to be empty
     )
 
 

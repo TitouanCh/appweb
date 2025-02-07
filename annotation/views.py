@@ -1,12 +1,13 @@
 from django.http import HttpResponseForbidden,HttpResponse, JsonResponse
 from django.template import loader
 from django.shortcuts import render, get_object_or_404,redirect
-from .models import Annotation,Feature,Genome
+from .models import Annotation, Feature, Genome
 from django.urls import reverse
 from .forms import FaSequenceForm
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from genhome.models import FaSequence
+from authentication.models import BioinfoUser
 from django.core.paginator import Paginator
 import json
 
@@ -17,6 +18,10 @@ def annotate_sequence(request, sequence_id):
 
     if not request.user.is_authenticated: # TODO: Checker les droits de l'utilisateur aussi
         return HttpResponseForbidden("You must be logged in to create an annotation.")
+    
+    if sequence.owner is None:
+        return HttpResponseForbidden("Cette séquence ne peut pas être annotée.")
+
 
     if request.method == 'POST':
         annotation_content = request.POST.get('annotation')
@@ -35,6 +40,14 @@ def annotate_sequence(request, sequence_id):
                 feature.save()
 
         return redirect('annotate_sequence', sequence_id=sequence.id)
+        for feature in sequence.feature.all():
+            new_value = request.POST.get(f'feature_{feature.id}')
+            if new_value and new_value != feature.value:
+                feature.value = new_value
+                feature.save()
+
+        return redirect('annotate_sequence', sequence_id=sequence.id)
+
     annotations = sequence.annotations.all()
     features=sequence.feature.all()
 
@@ -70,7 +83,7 @@ def delete_annotation(request, annotation_id):
     return redirect(reverse('annotate_sequence', args=[annotation.sequence.id]))
 
 
-def add_sequence(request):
+def add_sequence(request, random_owner=False):
     if request.method == 'POST':
         form = FaSequenceForm(request.POST, request.FILES)
         if not form.is_valid():
@@ -80,6 +93,7 @@ def add_sequence(request):
             fasta_file = request.FILES['sequence_file']
             existing_genome = form.cleaned_data['existing_genome']
             new_genome_name = form.cleaned_data['new_genome']
+
             if new_genome_name:
                 genome_, created = Genome.objects.get_or_create(name=new_genome_name)
             else:
@@ -89,25 +103,40 @@ def add_sequence(request):
             except ValidationError as e:
                 messages.error(request, str(e))
                 return render(request, 'annotation/add_sequence.html', {'form': form})
-            
+
             invalid_sequences = []
             new_sequence_ids = []
+
+
             for i, sequence in enumerate(sequences):
                 if not is_dna(sequence):
                     if not is_prot(sequence) : 
                         invalid_sequences.append(i)
                         continue  #Passer la sequence si ce n'est pas de l'adn ou du prot
+                
+                owner = None
+                annotateur = None
+                if not random_owner:
+                    owner = request.user
+                else:
+                    owner = BioinfoUser.objects.get_random_validator()
+                
+                if owner is not None:
+                    annotateur = BioinfoUser.objects.get_least_assigned_annotateur()
+
                 # Enregistrer chaque séquence valide dans la base de données
                 new_sequence = FaSequence(
                     status=form.cleaned_data['status'],
                     sequence=sequence,
                     #features_val=('|').join([annotations[i][key] for key in annotations[i]]),
-                    owner=request.user,
+                    owner=owner,
+                    annotateur=annotateur,
                     identifiant=ids[i],
                     genome=genome_
                 )
                 new_sequence.save()
-                new_sequence_ids.append(new_sequence.id) 
+                new_sequence_ids.append(new_sequence.id)
+
                 #Enregistrer les features de la sequence : 
                 for feature in features_list: 
                     if feature=='description' :
@@ -123,6 +152,9 @@ def add_sequence(request):
                                             value=annotations[i][feature],
                                             owner=request.user)
                         new_feature.save()
+                
+                print(f"{i} / {len(sequences)}")
+            
             # messages utilisateurs  
             if invalid_sequences:
                 messages.warning(request, f"attention il y a des sequences invalide apres header  : {', '.join(annotations[i])}")
@@ -252,10 +284,11 @@ def genome_sequences(request, genome_id):
     })
 
 
-def import_sequences(fasta_file, status, owner, new_genome_name=None, existing_genome=None):
+def import_sequences(fasta_file, status, owner, new_genome_name=None, existing_genome=None, random_owner=False):
     sequences = []
     ids = []
     annotations = {}
+    
     try:
         # Extraction des séquences et annotations
         annotations, sequences, ids = extract_sequence_from_fasta(fasta_file)
@@ -266,9 +299,11 @@ def import_sequences(fasta_file, status, owner, new_genome_name=None, existing_g
         genome_, created = Genome.objects.get_or_create(name=new_genome_name)
     else:
         genome_ = existing_genome
+    
     # Enregistrer les séquences
     invalid_sequences = []
     new_sequence_ids = []
+    
     for i, sequence in enumerate(sequences):
         if not is_dna(sequence) and not is_prot(sequence):
             invalid_sequences.append(i)
@@ -277,12 +312,14 @@ def import_sequences(fasta_file, status, owner, new_genome_name=None, existing_g
         new_sequence = FaSequence(
             status=status,
             sequence=sequence,
-            owner=owner,
+            owner=None,
             identifiant=ids[i],
             genome=genome_
         )
         new_sequence.save()
         new_sequence_ids.append(new_sequence.id)
+
+        annotation_flag = False
 
         # Enregistrer les annotations
         for feature in annotations[i]:
@@ -293,14 +330,29 @@ def import_sequences(fasta_file, status, owner, new_genome_name=None, existing_g
                     content=annotations[i][feature]
                 )
                 new_annotation.save()
+                annotation_flag = True
             else : 
                 new_feature=Feature(sequence=new_sequence,
                                             status=feature,
                                             value=annotations[i][feature],
                                             owner=owner)
                 new_feature.save()
+        
+        # Si la séquence n'a pas d'annotation/description, on lui ajoute un validateur & un annotateur
+        if not annotation_flag:
+            if random_owner:
+                owner = BioinfoUser.objects.get_random_validator()
+            
+            new_sequence.owner = owner
+
+            if owner is not None:
+                new_sequence.annotateur = BioinfoUser.objects.get_least_assigned_annotateur()
+            
+            new_sequence.save()
+        
 
     return new_sequence_ids, invalid_sequences
+
 def validate_annotations(request):
     if not request.user.is_authenticated:
         return HttpResponseForbidden("You must be logged in to verify annotations.")

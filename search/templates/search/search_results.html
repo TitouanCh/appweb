@@ -1,28 +1,29 @@
 {% extends "base.html" %}
 {% block title %}Search Results{% endblock %}
+
 {% block content %}
-<h1>Search Results</h1>
-
-<!-- Search Form -->
-<form method="get" action="">
-    {{ form.as_p }}
-    <button type="submit">Search</button>
-</form>
-
-<hr>
-
-<!-- Results Section -->
-{% if results %}
-    <h2>Found {{ results|length }} result(s):</h2>
-    <ul>
+    <h1>Search Sequences</h1>
+    <form method="get" id="search-form">
+        {{ form.as_p }}
+        <button type="submit">Search</button>
+    </form>
+    
+    <table border="1" id="results-table" style="margin-top: 20px;">
+        <tr>
+            <th>Status</th>
+            <th>Identifiant</th>
+            <th>Owner</th>
+            <th>Genome</th>
+            <th>Sequence (Preview)</th>
+        </tr>
         {% for result in results %}
-            <li>
-                <a href="{% url 'view_detail' result.id %}">{{ result.name }}</a>
-            </li>
+        <tr>
+            <td>{{ result.status }}</td>
+            <td><a href="/annotation/view/{{ result.id }}/">{{ result.identifiant }}</a></td>
+            <td>{{ result.owner }}</td>
+            <td>{{ result.genome.name }}</td>
+            <td>{{ result.sequence|slice:":30" }}...</td>
+        </tr>
         {% endfor %}
-    </ul>
-{% else %}
-    <p>No results found. Please refine your search.</p>
-{% endif %}
-
+    </table>
 {% endblock %}

@@ -1,15 +1,30 @@
+import random
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from genhome.models import FaSequence
+from annotation.models import Annotation
 
 class BioinfoUserManager(BaseUserManager):
-    def create_user(self, email, password=None, requested_role=None, role=None):
+    def create_user(self, email, password=None, requested_role=None, role=None, last_name=None, name=None, numero=None):
         # Create user
-        if not email:
-            raise ValueError("Users must have an email address")
-        user = self.model(email=self.normalize_email(email))
+        if not email or not password:
+            raise ValueError("Les utilisateurs doivent obligatoirement posséder une adresse mail et un mot de passe.")
+            
+        if self.model.objects.filter(email=email).exists():
+            raise ValueError("Un utilisateur avec cette adresse mail existe déjà.")
+        
+        if len(password) < 3: # Seulement 3 plus de facilité dans le débugage
+            raise ValueError("Le mot de passe doit faire au moins 3 charactères de long.")
+        
+        user = self.model(    
+            email=self.normalize_email(email),
+            last_name=last_name,
+            name=name,
+            numero=numero
+        )
         user.set_password(password)
         if not role:
             role = Role.ATTENTE
@@ -28,6 +43,26 @@ class BioinfoUserManager(BaseUserManager):
         user = self.create_user(email, password=password, role=Role.ADMIN)
         user.save(using=self._db)
         return user
+    
+    def get_random_validator(self):
+        validators = self.filter(role=Role.VALIDATEUR)
+        if validators.exists():
+            return random.choice(validators)
+        raise ObjectDoesNotExist("Aucun utilisateur avec le rôle 'validateur' n'a été trouvé.")
+    
+    def get_least_assigned_annotateur(self):
+        annotateurs = self.filter(role=Role.ANNOTATEUR).annotate(
+            annotation_count=models.Count('annotated_fa_sequences')
+        )
+
+        if not annotateurs.exists():
+            raise ObjectDoesNotExist("Aucun utilisateur avec le rôle 'annotateur' n'a été trouvé.")
+        
+        min_count = annotateurs.aggregate(min_assignments=models.Count('annotated_fa_sequences'))['min_assignments']
+        least_assigned_annotateurs = annotateurs.filter(annotation_count=min_count)
+
+        # Return a random annotateur if there's a tie
+        return random.choice(list(least_assigned_annotateurs))
 
 
 class Role(models.TextChoices):
@@ -52,6 +87,27 @@ class BioinfoUser(AbstractBaseUser):
         max_length=24,
         choices=Role.choices,
         default=Role.ADMIN # A changer apres migration
+    )
+
+    name = models.CharField(
+        verbose_name="prénom", 
+        max_length=32, 
+        null=True,
+        blank=True
+    )
+    
+    last_name = models.CharField(
+        verbose_name="nom", 
+        max_length=32, 
+        null=True, 
+        blank=True
+    )
+    
+    numero = models.CharField(
+        max_length=15,
+        validators=[RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Enter a valid phone number.")],
+        null=True, 
+        blank=True
     )
 
     objects = BioinfoUserManager()
@@ -81,6 +137,10 @@ class BioinfoUser(AbstractBaseUser):
     
     def get_owned_sequences(self) -> models.QuerySet[FaSequence]:
         return FaSequence.objects.filter(owner=self)
+    
+    def get_owned_annotations(self) -> models.QuerySet[Annotation]:
+        return Annotation.objects.filter(owner=self)
+
 
 class RoleRequestManager(models.Manager):
     def create_role_request(self, requester, requested_role):
@@ -88,6 +148,7 @@ class RoleRequestManager(models.Manager):
             raise ValidationError(f"Invalid role: {requested_role}")
 
         return self.create(requester=requester, requested_role=requested_role)
+
 
 class RoleRequest(models.Model):
     requested_role = models.CharField(

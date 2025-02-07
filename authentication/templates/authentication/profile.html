@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block title %}Profile{% endblock %}
 {% block content %}
-<h1>Profile : {{ request.user }}</h1>
+<h1>Profile de {{ request.user }}</h1>
 <div class="dna-seperator" style="width: 95%;">
 </div>
 
-<div style="display: flex; justify-content: space-evenly;">
+<div style="display: flex; justify-content: space-evenly; gap: 24px">
     <div class="greybox" style="width: 80vw;">
         <h2>Information du compte</h2>
         <p>Role : {{ request.user.get_role_display }}</p>

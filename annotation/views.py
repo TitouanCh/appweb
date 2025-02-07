@@ -7,6 +7,7 @@ from .forms import FaSequenceForm
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from genhome.models import FaSequence
+from django.core.paginator import Paginator
 import json
 
 features_list=['chromosome','gene','transcript','gene_biotype','transcript_biotype','gene_symbol','description']
@@ -229,10 +230,14 @@ def download_sequence_with_annotations(request, sequence_id):
 
 def genome_sequences(request, genome_id):
     genome = get_object_or_404(Genome, id=genome_id)
-    sequences = FaSequence.objects.filter(genome=genome) [:20]
+    sequences_list = FaSequence.objects.filter(genome=genome)
 
+    #On represente les sequence 20 par 20 
+    paginator = Paginator(sequences_list, 30)  
+    page_number = request.GET.get('page')  
+    sequences = paginator.get_page(page_number)
     annotated_sequences_count = Annotation.objects.filter(sequence__genome=genome).values('sequence').distinct().count()
-    total_sequences_count = sequences.count()
+    total_sequences_count = sequences_list.count()
         # Ajouter une information sur chaque séquence pour savoir si elle est annotée ou non
     for sequence in sequences:
         sequence.is_annotated = Annotation.objects.filter(sequence=sequence).exists()
@@ -243,6 +248,7 @@ def genome_sequences(request, genome_id):
         'sequences': sequences,
         'annotated_sequences_count': annotated_sequences_count,
         'total_sequences_count': total_sequences_count,
+        
     })
 
 

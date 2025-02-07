@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'genhome',
     'authentication',
     'search',
-    'blast',
     'blast_request',
     'annotation',
     'django_extensions',

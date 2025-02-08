@@ -1,4 +1,4 @@
-GitHub link to the Main Branch : https://github.com/TitouanCh/appweb.git
+GitHub link to the Main Branch : https://github.com/TitouanCh/genhome.git
 
 Students in the group :
 Nathan Carré : nathan.carre.dl@gmail.com

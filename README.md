@@ -69,6 +69,22 @@ python manage.py import_databases
 python manage.py runserver
 ```
 
+## Identifiants des comptes pour tester l'application (après create_test_users)
+```
+# Exemple annotateur
+email : guy@gmail.com
+mot de passe : 123
+
+# Exemple validateur
+email : delacroix@gmail.com
+mot de passe : 123
+
+# Exemple admin
+email : admin@gmail.com
+mot de passe : 123
+```
+
+
 ### 🔗 Accéder à l’application
 - **Interface utilisateur** : [localhost:8000](http://127.0.0.1:8000/)
 - **Interface d’administration** : [localhost:8000/admin/](http://127.0.0.1:8000/admin/)

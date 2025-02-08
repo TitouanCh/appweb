@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Validation{% endblock %}
 {% block content %}
-<h1>Validater annotations</h1>
+<h1>Valider les annotations</h1>
 <h2>Mes Séquences :</h2>
 <ul>
   {% for sequence in sequences %}
@@ -48,6 +48,26 @@
         },
         body: JSON.stringify({
           "type": "accept",
+          "request_id": this.getAttribute("data-number"),
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("both" + data.request_id).innerHTML = `<i>${data.display}</i>`;
+      });
+    });
+  }
+
+  for (button of refuse_buttons) {
+    button.addEventListener("click", function() {
+      fetch("{% url 'process-annotation' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "type": "deny",
           "request_id": this.getAttribute("data-number"),
         })
       })

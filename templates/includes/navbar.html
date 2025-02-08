@@ -9,12 +9,12 @@
         <li><a href="{% url 'about' %}">À propos</a></li>
         {% if request.user.is_authenticated %}
           <li>Hello {{ request.user }}</li>
-          <li><a href="/profile/">Mon profile</a></li>
+          <li><a href="/profile/">Mon profil</a></li>
           {% if request.user.role == 'AD' %}
-            <li><a href="/role-requests/">Role requests</a></li>
+            <li><a href="/role-requests/">Requête de rôle</a></li>
           {% endif %}
           {% if request.user.owns_sequence %}
-            <li><a href="/annotation/validate">Validate</a></li>
+            <li><a href="/annotation/validate">Validation</a></li>
           {% endif %}
           <li><a href="/logout">Déconnexion</a></li>
         {% else %}
